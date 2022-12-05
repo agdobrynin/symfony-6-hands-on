@@ -16,13 +16,8 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash && mv /root/.symfony5/
 
 RUN docker-php-ext-install pdo_pgsql intl zip
 
-COPY init.sh /init.sh
-RUN chmod +x /init.sh
-
 USER docker
 
 WORKDIR ${APP_DIR}
 
-EXPOSE 9000
-
-CMD [ "/init.sh" ]
+CMD ["php-fpm"]
