@@ -25,4 +25,4 @@ WORKDIR ${APP_DIR}
 
 EXPOSE 9000
 
-RUN "/init.sh"
+CMD [ "/init.sh" ]
