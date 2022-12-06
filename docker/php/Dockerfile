@@ -1,25 +1,23 @@
-FROM php:fpm-alpine3.17
+FROM php:8.1-fpm-alpine
 
 ARG UID
 ARG GID
 ARG APP_DIR
-ENV APP_DIR ${APP_DIR}
+ARG APP_ENV
 
 RUN addgroup -g ${GID} -S docker
 RUN adduser -S -D -u ${UID} -h /home/docker docker -G docker
 
-RUN  apk update \
-        && apk --no-cache add libzip-dev postgresql-dev bash
+RUN  apk add --no-cache libzip-dev postgresql-dev bash
 
-RUN docker-php-ext-install pdo_pgsql intl zip
+RUN docker-php-ext-install pdo_pgsql intl zip opcache
 
-COPY --from=composer:2.4.4 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
 
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
     && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
-# TODO meke as ARG APP_ENV different config for DEV or PROD
-COPY php-dev.ini /usr/local/etc/php/conf.d/php-dev.ini
+ADD php-${APP_ENV}.ini /usr/local/etc/php/conf.d/php-${APP_ENV}.ini
 
 USER docker
 
