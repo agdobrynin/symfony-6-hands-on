@@ -17,6 +17,8 @@ COPY --from=composer/composer:2-bin /composer /usr/bin/composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
     && mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
+
+ADD php-base.ini /usr/local/etc/php/conf.d/php-base.ini
 ADD php-${APP_ENV}.ini /usr/local/etc/php/conf.d/php-${APP_ENV}.ini
 
 USER docker
