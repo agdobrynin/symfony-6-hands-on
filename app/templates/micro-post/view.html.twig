@@ -1,0 +1,13 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}View post : {{ post.title|slice(0, 30) }}...{% endblock %}
+
+{% block body %}
+    <h4>{{ post.title }}</h4>
+    <p>{{ post.content }}</p>
+    <hr>
+    Created at {{ post.id.datetime|date('d.m.Y H:i') }}
+    {% if post.updateAt %}
+        and update at {{ post.updateAt|date('d.m.Y H:i.s') }}
+    {% endif %}
+{% endblock %}

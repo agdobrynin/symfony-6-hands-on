@@ -1,0 +1,12 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}List of posts{% endblock %}
+
+{% block body %}
+    {% for post in posts %}
+        <div>
+            <p>{{ post.title }}</p>
+            <a href="{{ url('app_mp_view', {id: post.id.toRfc4122}) }}">read...</a>
+        </div>
+    {% endfor %}
+{% endblock %}
