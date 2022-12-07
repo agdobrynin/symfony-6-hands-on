@@ -34,8 +34,8 @@ services:
         image: schickling/mailcatcher
         container_name: sy6-mailcatcher
         ports:
-            - "1025:1025"
-            - "1080:1080"
+            - 1025:1025
+            - 1080:1080
         networks:
             - sy6-network
   # database
@@ -48,7 +48,7 @@ services:
             POSTGRES_USER: ${DB_USER:-user}
             POSTGRES_DB: ${DB_NAME:-db}
         ports:
-            - "5432:5432"
+            - 5432:5432
         networks:
             - sy6-network
 
@@ -60,7 +60,7 @@ services:
       container_name: sy6-nginx
       restart: on-failure
       ports:
-          - "80:80"
+          - 80:80
       networks:
           - sy6-network
       volumes:

@@ -14,3 +14,6 @@ up:
 
 stop:
 	@docker-compose stop
+
+php-container:
+	@docker-compose exec php-fpm bash
