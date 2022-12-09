@@ -36,6 +36,10 @@ class UserProfile
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateOfBirth = null;
 
+    #[ORM\OneToOne(inversedBy: 'userProfile', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $toUser = null;
+
     public function getId(): ?Ulid
     {
         return $this->id;
@@ -109,6 +113,18 @@ class UserProfile
     public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): self
     {
         $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
+    }
+
+    public function getToUser(): ?User
+    {
+        return $this->toUser;
+    }
+
+    public function setToUser(User $toUser): self
+    {
+        $this->toUser = $toUser;
 
         return $this;
     }
