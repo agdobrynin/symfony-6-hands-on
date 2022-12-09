@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MicroPostRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -18,10 +19,10 @@ class MicroPost
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private readonly ?Ulid $id;
 
-    #[ORM\Column(length: 100, nullable: false)]
-    private string $title;
-
     #[ORM\Column(length: 300, nullable: false)]
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Length(min: 10, max: 300)]
     private string $content;
 
     #[ORM\Column(nullable: true)]
@@ -30,18 +31,6 @@ class MicroPost
     public function getId(): ?Ulid
     {
         return $this->id;
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getContent(): string

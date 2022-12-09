@@ -1,9 +1,8 @@
 {% extends '@main/base.html.twig' %}
 
-{% block title %}View post : {{ post.title|slice(0, 30) }}...{% endblock %}
+{% block title %}View post : {{ post.content|slice(0, 24) }}...{% endblock %}
 
 {% block body %}
-    <h4>{{ post.title }}</h4>
     <p>{{ post.content }}</p>
     <hr>
     Created at {{ post.id.datetime|date('d.m.Y H:i') }}

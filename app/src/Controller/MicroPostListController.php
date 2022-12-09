@@ -10,9 +10,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MicroPostListController extends AbstractController
 {
-    #[Route('/', name: 'app_mp_list', methods: 'get')]
-    public function index(MicroPostRepository $posts): Response
+    #[Route('/', name: 'app_micro_post_list', methods: 'get')]
+    public function index(MicroPostRepository $repository): Response
     {
-        return $this->render('@mp/list.html.twig', ['posts' => $posts->findAll()]);
+        $posts = $repository->findBy([], ['id' => 'desc']);
+
+        return $this->render('@mp/list.html.twig', ['posts' => $posts]);
     }
 }

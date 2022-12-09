@@ -1,5 +1,9 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        flash_type_service: '@App\Service\FlashTypeService'
+    form_themes:
+        - 'themes/custom/form_layout.html.twig'
     paths:
         '%kernel.project_dir%/templates': main
         '%kernel.project_dir%/templates/micro-post': mp

@@ -1,0 +1,10 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+<div>{{ form_errors(form) }}</div>
+
+<div>
+    {{ form_label(form.content, 'Please enter the post text', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium'}}) }}
+    {{ form_errors(form.content) }}
+    {{ form_widget(form.content, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+    {{ form_help(form.content) }}
+</div>
+{{ form_end(form) }}

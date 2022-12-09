@@ -11,13 +11,11 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create();
+        $faker = Factory::create('ru_RU');
 
         for ($i = 0; $i < 10; $i++) {
             $microPost = new MicroPost();
-            $microPost->setTitle($faker->realTextBetween(50, 100));
-            $microPost->setContent($faker->realTextBetween(250, 300));
-
+            $microPost->setContent($faker->realTextBetween(5, 140));
             $manager->persist($microPost);
         }
 

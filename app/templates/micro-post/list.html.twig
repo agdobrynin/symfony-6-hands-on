@@ -3,10 +3,26 @@
 {% block title %}List of posts{% endblock %}
 
 {% block body %}
-    {% for post in posts %}
-        <div>
-            <p>{{ post.title }}</p>
-            <a href="{{ url('app_mp_view', {id: post.id.toRfc4122}) }}">read...</a>
-        </div>
-    {% endfor %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        {% if posts|length > 0 %}
+            {% for post in posts %}
+                <div class="border p-4 rounded-lg border-indigo-400">
+                    @Ivan at {{ post.id.dateTime|date }}
+                    <hr>
+                    {{ post.content }}
+                    <div>
+                        <div>
+                            <a href="#">Like 0</a>
+                        </div>
+                        <div>
+                            <a href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">✒ edit</a>
+                            <a href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">👀 view</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            There's nothing here yet!
+        {% endif %}
+    </div>
 {% endblock %}
