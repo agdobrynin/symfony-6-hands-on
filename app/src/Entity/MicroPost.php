@@ -31,6 +31,7 @@ class MicroPost
     private ?\DateTimeImmutable $updateAt = null;
 
     #[ORM\OneToMany(mappedBy: 'microPost', targetEntity: Comment::class, orphanRemoval: true)]
+    #[ORM\OrderBy(['id' => 'desc'])]
     private Collection $comments;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'likedPosts')]

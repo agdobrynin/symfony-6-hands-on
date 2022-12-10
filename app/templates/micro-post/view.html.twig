@@ -2,11 +2,26 @@
 
 {% block title %}View post : {{ post.content|slice(0, 24) }}...{% endblock %}
 
+{% block bradCrumbs %} <span class="text-4xl">&rarr;</span> View post {% endblock %}
+
 {% block body %}
-    <p>{{ post.content }}</p>
-    <hr>
-    Created at {{ post.id.datetime|date('d.m.Y H:i') }}
-    {% if post.updateAt %}
-        and update at {{ post.updateAt|date('d.m.Y H:i.s') }}
-    {% endif %}
+    {{ include('@mp/include/_post.html.twig', {post}) }}
+
+    <div class="mt-4">
+        {% for comment in post.comments %}
+            <div>
+                <div class="flex items-center">
+                    <div class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full text-3xl w-8 h-8 ring-2 right-white dark:ring-gray-600 mr-2"></div>
+                    <div>
+                        <div class="font-medium text-gray-800 dark:text-gray-300">Author: @Ivan</div>
+                        <div class="font-light text-gray-500 dark:text-gray-500">
+                            When: {{ comment.id.datetime|date }}</div>
+                    </div>
+                </div>
+                <div class="flex ml-4">
+                    <div class="border-l-2 pl-6 pb-6 border-gray-300 dark:border-gray-600">{{ comment.content }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

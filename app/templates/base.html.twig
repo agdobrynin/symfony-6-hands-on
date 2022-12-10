@@ -38,8 +38,10 @@
         </div>
     </div>
 </div>
-{{ include('@mp/include/_flash_messages_success.html.twig', {messages: flash_type_service.successes}) }}
-{{ include('@mp/include/_flash_messages_error.html.twig', {messages: flash_type_service.errors}) }}
-{% block body %}{% endblock %}
+<div class="w-full md:w-2/3 mx-auto mb-4">
+    {{ include('@mp/include/_flash_messages_success.html.twig', {messages: flash_type_service.successes}) }}
+    {{ include('@mp/include/_flash_messages_error.html.twig', {messages: flash_type_service.errors}) }}
+    {% block body %}{% endblock %}
+</div>
 </body>
 </html>

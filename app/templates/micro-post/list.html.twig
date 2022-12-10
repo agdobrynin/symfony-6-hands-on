@@ -6,22 +6,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {% if posts|length > 0 %}
             {% for post in posts %}
-                <div class="border p-4 rounded-lg border-indigo-400">
-                    @Ivan at {{ post.id.dateTime|date }}
-                    <hr>
-                    {{ post.content }}
-                    <div class="flex flex-row">
-                        <div>
-                            <a href="#">
-                                Like <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">1</span>
-                            </a>
-                        </div>
-                        <div>
-                            <a class="mr-2" href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">✒ edit</a>
-                            <a href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">👀 view</a>
-                        </div>
-                    </div>
-                </div>
+                {{ include('@mp/include/_post.html.twig', {post}) }}
             {% endfor %}
         {% else %}
             There's nothing here yet!

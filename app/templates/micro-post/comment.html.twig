@@ -1,0 +1,23 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}Add comment to post : {{ post.content|slice(0, 24) }}...{% endblock %}
+
+{% block bradCrumbs %}
+    <span class="text-4xl">&rarr;</span> <a href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">Post</a>
+    <span class="text-4xl">&rarr;</span> New comment
+{% endblock %}
+
+{% block body %}
+    {{ include('@mp/include/_post.html.twig', {post}) }}
+    <div class="mt-5">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div>{{ form_errors(form) }}</div>
+        <div>
+            {{ form_label(form.content, 'Please enter comment', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium'}}) }}
+            {{ form_errors(form.content) }}
+            {{ form_widget(form.content, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+            {{ form_help(form.content) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

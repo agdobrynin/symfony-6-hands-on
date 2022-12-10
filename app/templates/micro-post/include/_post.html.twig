@@ -1,0 +1,25 @@
+<div class="border p-4 rounded-lg border-indigo-400">
+    @Ivan at {{ post.id.dateTime|date }}
+
+    <div>
+        {{ post.content }}
+    </div>
+
+    <div class="flex flex-row pt-5">
+        <div class="flex-1">
+            <a href="#">
+                Like <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">1</span>
+            </a>
+        </div>
+        <div class="flex-2 justify-end">
+            <a class="mr-2" href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
+            |
+            <a href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">view</a>
+            |
+            <a href="{{ url('app_comment_add', {id: post.id.toRfc4122}) }}">
+                add comment
+                <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ post.comments.count }}</span>
+            </a>
+        </div>
+    </div>
+</div>
