@@ -16,7 +16,7 @@ class UserProfile
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private readonly ?Ulid $id;
+    private ?Ulid $id;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;

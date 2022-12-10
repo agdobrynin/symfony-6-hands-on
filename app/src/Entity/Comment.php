@@ -17,7 +17,7 @@ class Comment
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private readonly ?Ulid $id;
+    private ?Ulid $id;
 
     #[ORM\Column(length: 300)]
     #[Assert\NotNull]
@@ -28,6 +28,10 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?MicroPost $microPost = null;
+
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
 
     public function getId(): ?Ulid
     {
@@ -54,6 +58,18 @@ class Comment
     public function setMicroPost(?MicroPost $microPost): self
     {
         $this->microPost = $microPost;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

@@ -19,7 +19,7 @@ class MicroPost
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private readonly ?Ulid $id;
+    private ?Ulid $id;
 
     #[ORM\Column(length: 300, nullable: false)]
     #[Assert\NotBlank]
@@ -36,6 +36,10 @@ class MicroPost
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'likedPosts')]
     private Collection $likedBy;
+
+    #[ORM\ManyToOne(inversedBy: 'microPosts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
 
     public function __construct()
     {
@@ -121,6 +125,18 @@ class MicroPost
     public function removeLikedBy(User $likedBy): self
     {
         $this->likedBy->removeElement($likedBy);
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

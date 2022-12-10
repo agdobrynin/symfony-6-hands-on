@@ -28,6 +28,7 @@ class MicroPostAddController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var MicroPost $microPost */
             $microPost = $form->getData();
+            $microPost->setAuthor($this->getUser());
             $microPostRepository->add($microPost, true);
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Micro post have been added');
 

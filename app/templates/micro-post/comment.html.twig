@@ -3,8 +3,9 @@
 {% block title %}Add comment to post : {{ post.content|slice(0, 24) }}...{% endblock %}
 
 {% block bradCrumbs %}
-    <span class="text-4xl">&rarr;</span> <a href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">Post</a>
-    <span class="text-4xl">&rarr;</span> New comment
+    <span class="text-2xl">&rarr;</span> <a class="underline decoration-sky-500/30"
+                                            href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">Post</a>
+    <span class="text-2xl">&rarr;</span> New comment
 {% endblock %}
 
 {% block body %}

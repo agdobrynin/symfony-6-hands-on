@@ -2,10 +2,12 @@
 
 {% block title %}View post : {{ post.content|slice(0, 24) }}...{% endblock %}
 
-{% block bradCrumbs %} <span class="text-4xl">&rarr;</span> View post {% endblock %}
+{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> View post {% endblock %}
 
 {% block body %}
-    {{ include('@mp/include/_post.html.twig', {post}) }}
+    <div class="drop-shadow-lg dark:drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]">
+        {{ include('@mp/include/_post.html.twig', {post}) }}
+    </div>
 
     <div class="mt-4">
         {% for comment in post.comments %}
@@ -13,7 +15,8 @@
                 <div class="flex items-center">
                     <div class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full text-3xl w-8 h-8 ring-2 right-white dark:ring-gray-600 mr-2"></div>
                     <div>
-                        <div class="font-medium text-gray-800 dark:text-gray-300">Author: @Ivan</div>
+                        <div class="font-medium text-gray-800 dark:text-gray-300">
+                            Author: {{ comment.author.email }}</div>
                         <div class="font-light text-gray-500 dark:text-gray-500">
                             When: {{ comment.id.datetime|date }}</div>
                     </div>
