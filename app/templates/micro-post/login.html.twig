@@ -1,0 +1,41 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block bradCrumbs %} <span class="text-4xl">&rarr;</span> Login user {% endblock %}
+
+{% block body %}
+    {% if error %}
+        {{ include(
+            '@mp/include/_flash_messages_error.html.twig',
+            {'messages': [error.messageKey|trans(error.messageData, 'security')]}
+        ) }}
+    {% endif %}
+
+    <form action="{{ path('app_login') }}" method="post">
+        <div>
+            <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    for="username">Email:</label>
+            <input type="text"
+                   id="username"
+                   class="block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2"
+                   name="_username"
+                   value="{{ last_username }}">
+        </div>
+        <div>
+            <label
+                    class="block text-gray-700 dark:text-gray-300 font-medium"
+                    for="password">Password:</label>
+            <input type="password"
+                   id="password"
+                   class="block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2"
+                   name="_password">
+        </div>
+        <button
+                type="submit"
+                class="block w-full shadow-sm border-transparent bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2">
+            Login
+        </button>
+    </form>
+{% endblock %}
