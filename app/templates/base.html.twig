@@ -27,18 +27,17 @@
            class="border rounded-md p-1 text-slate-50 bg-slate-500 border-slate-900 dark:bg-slate-400 dark:text-slate-900">MP</a>
         {% block bradCrumbs %}{% endblock %}
     </div>
-    <div class="text-right">
+    <div class="text-right flex">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-            <div>
-                <a href="{{ path('app_micro_post_add') }}">Add post</a>
-            </div>
-            <div>
-                {% if is_granted('ROLE_USER') %}
-                    <a href="{{ path('app_logout') }}">Logout</a>
-                {% else %}
-                    <a href="{{ path('app_login') }}">Login</a>
-                {% endif %}
-            </div>
+            {% if is_granted('ROLE_USER') %}
+                <a class="bg-indigo-600 border border-black hover:bg-indigo-800 dark:bg-indigo-500 dark:hover:bg-indigo-800 dark:border dark:border-white text-white rounded-md p-2 mt-4 mb-2"
+                   href="{{ path('app_micro_post_add') }}">Add post</a>
+                <a class="bg-indigo-600 border border-black hover:bg-indigo-800 dark:bg-indigo-500 dark:hover:bg-indigo-800 dark:border dark:border-white text-white rounded-md p-2 mt-4 mb-2"
+                   href="{{ path('app_logout') }}">Logout</a>
+            {% else %}
+                <a class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2"
+                   href="{{ path('app_login') }}">Login</a>
+            {% endif %}
         </div>
     </div>
 </div>
