@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Entity\UserProfile;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -19,14 +20,21 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create('ru_RU');
+        $faker = Factory::create();
 
         $users = [];
         $userPassword = '12345678';
 
-        for ($i = 0; $i < 3; $i++) {
-            $user = (new User())->setEmail($faker->email());
+        foreach (['admin@email.com', 'first@email.com', 'second@email.com'] as $email) {
+            $profile = (new UserProfile())
+                ->setName($faker->name())
+                ->setTwitterUsername($faker->userName())
+                ->setLocation($faker->city());
+
+            $user = (new User())->setEmail($email);
             $user->setPassword($this->passwordHasher->hashPassword($user, $userPassword));
+            $user->setUserProfile($profile);
+
             $manager->persist($user);
             $users[] = $user;
         }
