@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1">
     <div class="border-t p-4 border-x rounded-t-lg border-slate-800 bg-slate-200 dark:border-slate-200 dark:bg-slate-900">
-        {{ post.author.userProfile.twitterUsername|default(post.author.email|mask_email) }}
-        at {{ post.id.dateTime|date }}
+        <span class="font-semibold">{{ post.author.userProfile.name|default(post.author.email|mask_email) }}</span>
+        <span class="font-light">at {{ post.id.dateTime|date }}</span>
     </div>
     <div class="border p-4 border-x border-slate-800 dark:border-slate-200">
         <div class="drop-shadow-none">{{ post.content }}</div>
@@ -13,9 +13,11 @@
             </a>
         </div>
         <div class="flex drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
-            <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
-               href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
-            <span class="flex-none w-2"> </span>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
+                   href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
+                <span class="flex-none w-2"> </span>
+            {% endif %}
             {% if post.comments.count %}
                 <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                    href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">

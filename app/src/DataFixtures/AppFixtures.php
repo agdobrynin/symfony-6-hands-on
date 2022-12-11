@@ -34,8 +34,10 @@ class AppFixtures extends Fixture
             $profile = null;
 
             if (!\in_array(User::ROLE_ADMIN, $userDto->roles)) {
+                $name = ucfirst(explode('@', $userDto->email)[0]);
+
                 $profile = (new UserProfile())
-                    ->setName($faker->name())
+                    ->setName($name)
                     ->setTwitterUsername($faker->userName())
                     ->setLocation($faker->city());
             }
