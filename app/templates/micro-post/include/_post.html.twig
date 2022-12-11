@@ -1,6 +1,7 @@
 <div class="grid grid-cols-1">
     <div class="border-t p-4 border-x rounded-t-lg border-slate-800 bg-slate-200 dark:border-slate-200 dark:bg-slate-900">
-        @{{ post.author.userProfile.twitterUsername }} at {{ post.id.dateTime|date }}
+        {{ post.author.userProfile.twitterUsername|default(post.author.email|mask_email) }}
+        at {{ post.id.dateTime|date }}
     </div>
     <div class="border p-4 border-x border-slate-800 dark:border-slate-200">
         <div class="drop-shadow-none">{{ post.content }}</div>
