@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MicroPostAddController extends AbstractController
 {
@@ -20,6 +21,7 @@ class MicroPostAddController extends AbstractController
         methods: ['get', 'post'],
         priority: 2,
     )]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Request $request, MicroPostRepository $microPostRepository): Response|RedirectResponse
     {
         $form = $this->createForm(MicroPostType::class, new MicroPost());

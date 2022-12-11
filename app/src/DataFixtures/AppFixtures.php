@@ -25,15 +25,21 @@ class AppFixtures extends Fixture
         $users = [];
         $userPassword = '12345678';
 
-        foreach (['admin@email.com', 'first@email.com', 'second@email.com'] as $email) {
+        $fixtureUsers[] = new UserFixtureDto('admin@email.com', [User::ROLE_ADMIN]);
+        $fixtureUsers[] = new UserFixtureDto('editor@email.com', [User::ROLE_EDITOR]);
+        $fixtureUsers[] = new UserFixtureDto('commenter@email.com', [User::ROLE_COMMENTER]);
+        $fixtureUsers[] = new UserFixtureDto('user@email.com', [User::ROLE_USER]);
+
+        foreach ($fixtureUsers as $userDto) {
             $profile = (new UserProfile())
                 ->setName($faker->name())
                 ->setTwitterUsername($faker->userName())
                 ->setLocation($faker->city());
 
-            $user = (new User())->setEmail($email);
+            $user = (new User())->setEmail($userDto->email);
             $user->setPassword($this->passwordHasher->hashPassword($user, $userPassword));
-            $user->setUserProfile($profile);
+            $user->setUserProfile($profile)
+                ->setRoles($userDto->roles);
 
             $manager->persist($user);
             $users[] = $user;

@@ -15,8 +15,8 @@
         tailwind.config = {
             darkMode: 'class',
         };
-        if (null === params.darkModeOn) {
-            tailwind.config.darkMode = 'x';
+        if (null === params.dark) {
+            tailwind.config.darkMode = '';
         }
     </script>
 </head>
@@ -38,7 +38,7 @@
     </div>
     <div class="flex justify-end drop-shadow-lg dark:drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]">
         <div class="text-sm text-gray-500 dark:text-gray-400">
-            {% if is_granted('ROLE_USER') %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                 <a class="bg-indigo-600 border border hover:bg-indigo-800 dark:bg-indigo-500 dark:hover:bg-indigo-800 dark:border dark:border-white text-white rounded-md p-2"
                    href="{{ path('app_micro_post_add') }}">Add post</a>
                 <a class="bg-indigo-600 border border hover:bg-indigo-800 dark:bg-indigo-500 dark:hover:bg-indigo-800 dark:border dark:border-white text-white rounded-md p-2"

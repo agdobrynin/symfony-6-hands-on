@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\MicroPost;
+use App\Entity\User;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Service\FlashTypeServiceInterface;
@@ -13,10 +14,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CommentAddController extends AbstractController
 {
     #[Route('/micro-post/{id}/comment', name: 'app_comment_add', methods: 'post|get')]
+    #[IsGranted(User::ROLE_COMMENTER, null, 'You can\'t add comment with current roles')]
     public function index(MicroPost $post, Request $request, CommentRepository $commentRepository): RedirectResponse|Response
     {
         $form = $this->createForm(CommentType::class, new Comment());
