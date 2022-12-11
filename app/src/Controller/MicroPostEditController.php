@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\MicroPost;
-use App\Entity\User;
 use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
 use App\Service\FlashTypeServiceInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class MicroPostEditController extends AbstractController
 {
     #[Route('/micro-post/{id}/edit', name: 'app_micro_post_edit')]
-    #[IsGranted(User::ROLE_EDITOR)]
+    #[IsGranted(MicroPost::VOTER_EDIT, 'post', 'Access denny. Edit post can owner or admin.')]
     public function index(
         MicroPost           $post,
         Request             $request,

@@ -24,8 +24,11 @@
                 </a>
                 <span class="flex-none w-2"> </span>
             {% endif %}
-            <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
-               href="{{ url('app_comment_add', {id: post.id.toRfc4122}) }}">add comment</a>
+
+            {% if is_granted('ROLE_COMMENTER') %}
+                <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
+                   href="{{ url('app_comment_add', {id: post.id.toRfc4122}) }}">add comment</a>
+            {% endif %}
         </div>
     </div>
 </div>
