@@ -1,26 +1,28 @@
-<div class="border p-4 rounded-lg border-slate-800 dark:border-slate-200">
-    @{{ post.author.email }} at {{ post.id.dateTime|date }}
-
-    <div>
-        {{ post.content }}
+<div class="grid grid-cols-1">
+    <div class="border-t p-4 border-x rounded-t-lg border-slate-800 bg-slate-200 dark:border-slate-200 dark:bg-slate-900">
+        @{{ post.author.userProfile.twitterUsername }} at {{ post.id.dateTime|date }}
     </div>
-
-    <div class="pt-5">
-        <div class="mb-5">
+    <div class="border p-4 border-x border-slate-800 dark:border-slate-200">
+        <div class="drop-shadow-none">{{ post.content }}</div>
+    </div>
+    <div class="pt-5 border-b p-4 border-x rounded-b-lg border-slate-800 bg-slate-100 dark:border-slate-200 dark:bg-slate-900">
+        <div class="mb-5 drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
             <a class="flex-auto border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700" href="#">
                 Like <span class="px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">1</span>
             </a>
         </div>
-        <div class="flex">
+        <div class="flex drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
             <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
             <span class="flex-none w-2"> </span>
-            <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
-               href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">
-                read comments
-                <span class="flex-auto text-sm px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">{{ post.comments.count }}</span>
-            </a>
-            <span class="flex-none w-2"> </span>
+            {% if post.comments.count %}
+                <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
+                   href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">
+                    read comments
+                    <span class="flex-auto text-sm px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">{{ post.comments.count }}</span>
+                </a>
+                <span class="flex-none w-2"> </span>
+            {% endif %}
             <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                href="{{ url('app_comment_add', {id: post.id.toRfc4122}) }}">add comment</a>
         </div>
