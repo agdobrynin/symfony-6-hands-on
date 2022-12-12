@@ -42,11 +42,20 @@ class CreateUserCommand extends Command
 
         $question = new Question('Please enter user email: ');
 
-        $question->setValidator(function ($answer) {
-            $errors = $this->validator->validate($answer, new Assert\Email());
+        $question->setValidator(function ($answer) use ($io) {
+            $errors = $this->validator->validate(
+                $answer, [
+                new Assert\Email(),
+                new Assert\NotBlank(),
+                new Assert\NotNull(),
+            ]);
 
             if (count($errors)) {
                 throw new \UnexpectedValueException((string)$errors);
+            }
+
+            if ($this->userRepository->findOneBy(['email' => $answer])) {
+                throw new \RuntimeException(sprintf('Email %s already exist. Choose another email', $answer));
             }
 
             return $answer;
@@ -61,7 +70,7 @@ class CreateUserCommand extends Command
         $question->setHidden(true)->setHiddenFallback(false);
 
         $question->setValidator(static function ($answer) {
-            if (!is_string($answer) || mb_strlen($answer) <= self::PASSWORD_MIN_LENGTH) {
+            if (!is_string($answer) || mb_strlen($answer) < self::PASSWORD_MIN_LENGTH) {
                 throw new \RuntimeException(sprintf('Password must be more then %s symbols', self::PASSWORD_MIN_LENGTH));
             }
 
@@ -90,10 +99,11 @@ class CreateUserCommand extends Command
         $question->setErrorMessage('Role %s is invalid.');
         $role = $helper->ask($input, $output, $question);
 
-        $confirmMessage = sprintf('Create new user with email %s and role %s? [default yes]:', $email, $role);
+        $confirmMessage = sprintf('Create new user with email %s and role %s? [default yes]: ', $email, $role);
         $question = new ConfirmationQuestion($confirmMessage, true);
 
         if (!$helper->ask($input, $output, $question)) {
+            $io->info('You cancel add new user.');
             return Command::SUCCESS;
         }
 
