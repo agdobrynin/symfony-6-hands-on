@@ -13,7 +13,7 @@
             </a>
         </div>
         <div class="flex drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {% if is_granted(constant('\\App\\Entity\\MicroPost::VOTER_EDIT'), post) %}
                 <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                    href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
                 <span class="flex-none w-2"> </span>
