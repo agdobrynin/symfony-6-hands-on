@@ -8,9 +8,13 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsCommand(
@@ -24,7 +28,8 @@ class CreateUserCommand extends Command
     public function __construct(
         private readonly UserRepository     $userRepository,
         private readonly ValidatorInterface $validator,
-        private UserPasswordHasherInterface $passwordHasher
+        private UserPasswordHasherInterface $passwordHasher,
+        private ParameterBagInterface       $parameterBag
     )
     {
         parent::__construct();
@@ -33,10 +38,22 @@ class CreateUserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-
         $helper = $this->getHelper('question');
 
         $question = new Question('Please enter user email: ');
+
+        $question->setValidator(function ($answer) {
+            $errors = $this->validator->validate($answer, new Assert\Email());
+
+            if (count($errors)) {
+                throw new \UnexpectedValueException((string)$errors);
+            }
+
+            return $answer;
+        });
+
+        $question->setMaxAttempts(2);
+
         $email = $helper->ask($input, $output, $question);
 
         $strQuestion = sprintf('Please enter user password (min %s symbols): ', self::PASSWORD_MIN_LENGTH);
@@ -61,6 +78,23 @@ class CreateUserCommand extends Command
 
         if ($password1 !== $password2) {
             throw new \UnexpectedValueException('Passwords mast matched!');
+        }
+
+        $roles = array_reverse(array_keys($this->parameterBag->get('security.role_hierarchy.roles')));
+
+        $question = new ChoiceQuestion(
+            'Please select user role (defaults to ROLE_USER): ',
+            ['ROLE_USER', ...$roles],
+            0
+        );
+        $question->setErrorMessage('Role %s is invalid.');
+        $role = $helper->ask($input, $output, $question);
+
+        $confirmMessage = sprintf('Create new user with email %s and role %s? [default yes]:', $email, $role);
+        $question = new ConfirmationQuestion($confirmMessage, true);
+
+        if (!$helper->ask($input, $output, $question)) {
+            return Command::SUCCESS;
         }
 
         $user = (new User())->setEmail($email);
