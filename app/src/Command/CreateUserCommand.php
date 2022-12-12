@@ -89,6 +89,10 @@ class CreateUserCommand extends Command
             throw new \UnexpectedValueException('Passwords mast matched!');
         }
 
+        $confirmMessage = sprintf('Set email %s as verified? [default yes]: ', $email);
+        $question = new ConfirmationQuestion($confirmMessage, true);
+        $verified = $helper->ask($input, $output, $question);
+
         $roles = array_reverse(array_keys($this->parameterBag->get('security.role_hierarchy.roles')));
 
         $question = new ChoiceQuestion(
@@ -99,7 +103,7 @@ class CreateUserCommand extends Command
         $question->setErrorMessage('Role %s is invalid.');
         $role = $helper->ask($input, $output, $question);
 
-        $confirmMessage = sprintf('Create new user with email %s and role %s? [default yes]: ', $email, $role);
+        $confirmMessage = sprintf('Create new user with email %s and role %s and verified %s? [default yes]: ', $email, $role, ($verified ? 'yes' : 'no'));
         $question = new ConfirmationQuestion($confirmMessage, true);
 
         if (!$helper->ask($input, $output, $question)) {
@@ -110,6 +114,7 @@ class CreateUserCommand extends Command
         $user = (new User())->setEmail($email);
         $passwordHashed = $this->passwordHasher->hashPassword($user, $password1);
         $user->setPassword($passwordHashed);
+        $user->setIsVerified($verified);
 
         $errors = $this->validator->validate($user);
 
