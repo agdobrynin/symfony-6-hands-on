@@ -18,10 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[AsCommand(
-    name: 'app:create-user',
+    name: 'app:user:create',
     description: 'Add new user',
 )]
-class CreateUserCommand extends Command
+class UserCreateCommand extends Command
 {
     private const PASSWORD_MIN_LENGTH = 6;
 
