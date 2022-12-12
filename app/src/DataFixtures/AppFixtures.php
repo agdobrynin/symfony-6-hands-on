@@ -25,15 +25,15 @@ class AppFixtures extends Fixture
         $users = [];
         $userPassword = '12345678';
 
-        $fixtureUsers[] = new UserFixtureDto('admin@email.com', [User::ROLE_ADMIN]);
-        $fixtureUsers[] = new UserFixtureDto('editor@email.com', [User::ROLE_EDITOR]);
-        $fixtureUsers[] = new UserFixtureDto('commenter@email.com', [User::ROLE_COMMENTER]);
-        $fixtureUsers[] = new UserFixtureDto('user@email.com', [User::ROLE_USER]);
+        $fixtureUsers[] = new UserFixtureDto('admin@email.com', ['ROLE_ADMIN']);
+        $fixtureUsers[] = new UserFixtureDto('editor@email.com', ['ROLE_EDITOR']);
+        $fixtureUsers[] = new UserFixtureDto('commenter@email.com', ['ROLE_COMMENTER']);
+        $fixtureUsers[] = new UserFixtureDto('user@email.com', []);
 
         foreach ($fixtureUsers as $userDto) {
             $profile = null;
 
-            if (!\in_array(User::ROLE_ADMIN, $userDto->roles)) {
+            if (!\in_array('ROLE_ADMIN', $userDto->roles)) {
                 $name = ucfirst(explode('@', $userDto->email)[0]);
 
                 $profile = (new UserProfile())

@@ -21,7 +21,7 @@ class MicroPostAddController extends AbstractController
         methods: ['get', 'post'],
         priority: 2,
     )]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_WRITER')]
     public function index(Request $request, MicroPostRepository $microPostRepository): Response|RedirectResponse
     {
         $form = $this->createForm(MicroPostType::class, new MicroPost());

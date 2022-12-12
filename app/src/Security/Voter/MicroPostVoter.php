@@ -32,14 +32,16 @@ class MicroPostVoter extends Voter
         $user = $token->getUser();
 
         if ($user instanceof User) {
-            if ($this->security->isGranted(User::ROLE_ADMIN)) {
+            if ($this->security->isGranted('ROLE_ADMIN')) {
                 return true;
             }
 
             if (MicroPost::VOTER_EDIT === $attribute) {
                 return $subject->getAuthor()->getId() === $user->getId()
-                    || $this->security->isGranted(User::ROLE_EDITOR);
-            } elseif (MicroPost::VOTER_VIEW === $attribute) {
+                    || $this->security->isGranted('ROLE_EDITOR');
+            }
+
+            if (MicroPost::VOTER_VIEW === $attribute) {
                 return true;
             }
         }
