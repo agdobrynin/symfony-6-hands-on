@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserProfileRepository::class)]
 class UserProfile
@@ -25,9 +26,15 @@ class UserProfile
     private ?string $bio = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(min: 10, max: 255)]
+    #[Assert\Url(
+        protocols: ['http', 'https'],
+    )]
     private ?string $websiteUrl = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Assert\Length(min: 4, max: 50)]
+    #[Assert\Regex('/^([a-z0-9_]{4,50})$/i', message: 'Twitter user name is wrong')]
     private ?string $twitterUsername = null;
 
     #[ORM\Column(length: 255, nullable: true)]

@@ -1,11 +1,11 @@
 {% extends '@main/base.html.twig' %}
 
-{% block title %}User profile{% endblock %}
+{% block title %}Edit user profile{% endblock %}
 
-{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> User profile {% endblock %}
+{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> Edit user profile {% endblock %}
 
 {% block body %}
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     {{ include('@main/user_profile/_form.html.twig', {form}) }}
     <button
             type="submit"

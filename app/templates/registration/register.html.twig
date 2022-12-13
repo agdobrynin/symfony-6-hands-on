@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends '@main/base.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
@@ -11,7 +11,7 @@
     <div class="text-gray-500 mb-4 pb-4 border-b border-gray300">
         Enter your credential
     </div>
-    {{ form_start(registrationForm) }}
+    {{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
     {{ form_label(registrationForm.email, 'Your email address', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium'}}) }}
     {{ form_errors(registrationForm.email) }}
     {{ form_widget(registrationForm.email, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}

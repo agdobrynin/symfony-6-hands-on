@@ -3,36 +3,36 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <div>
         {{ form_label(form.name, 'Your name', {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.name) }}
         {{ form_widget(form.name, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.name) }}
     </div>
     <div>
         {{ form_label(form.dateOfBirth, null, {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.dateOfBirth) }}
         {{ form_widget(form.dateOfBirth, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.dateOfBirth) }}
     </div>
     <div>
         {{ form_label(form.websiteUrl, 'Personal website', {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.websiteUrl) }}
         {{ form_widget(form.websiteUrl, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.websiteUrl) }}
     </div>
     <div>
-        {{ form_label(form.twitterUsername, 'Link to twitter page', {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.twitterUsername) }}
+        {{ form_label(form.twitterUsername, null, {'label_attr': {'class': label_class }}) }}
         {{ form_widget(form.twitterUsername, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.twitterUsername) }}
     </div>
 </div>
 <div class="grid grid-cols-1 gap-4 mt-4">
     <div>
         {{ form_label(form.location, null, {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.location) }}
         {{ form_widget(form.location, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.location) }}
         {{ form_help(form.location) }}
     </div>
     <div>
         {{ form_label(form.bio, null, {'label_attr': {'class': label_class }}) }}
-        {{ form_errors(form.bio) }}
         {{ form_widget(form.bio, {'attr': {'class': widget_class }}) }}
+        {{ form_errors(form.bio) }}
         {{ form_help(form.bio) }}
     </div>
 </div>

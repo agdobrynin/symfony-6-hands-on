@@ -1,0 +1,40 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}User profile: {{ user.userProfile.name|default(user.email|mask_email) }}{% endblock %}
+
+{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> User profile{% endblock %}
+
+{% block body %}
+    <div class="text-2xl mb-2">Blogger: {{ user.userProfile.name ?? user.email|mask_email }}</div>
+    {% if user.userProfile %}
+        {% set href_class = 'underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300' %}
+        <hr>
+        <div class="flex flex-wrap gap-8 mt-4">
+            {% if user.userProfile.location %}
+                <div><label title="Location">📌</label> {{ user.userProfile.location }}</div>
+            {% endif %}
+
+            {% if user.userProfile.websiteUrl %}
+                <div><label title="Web site">🕸</label> <a
+                            class="{{ href_class }}"
+                            href="{{ user.userProfile.websiteUrl }}">{{ user.userProfile.websiteUrl }}</a></div>
+            {% endif %}
+
+            {% if user.userProfile.twitterUsername %}
+                <div><label>🕊</label> <a
+                            class="{{ href_class }}"
+                            href="https://twitter.com/{{ user.userProfile.twitterUsername }}">@{{ user.userProfile.twitterUsername }}</a>
+                </div>
+            {% endif %}
+            {% if user.userProfile.dateOfBirth %}
+                <div><label>🎂</label> {{ user.userProfile.dateOfBirth|date('F j, Y') }}</div>
+            {% endif %}
+        </div>
+        {% if user.userProfile.bio %}
+            <div class="border-t mt-4 pt-4">Short bio:
+                <p class="mt-4">{{ user.userProfile.bio }}</p></div>
+        {% endif %}
+    {% else %}
+        <p class="mt-4">Profile is empty</p>
+    {% endif %}
+{% endblock %}

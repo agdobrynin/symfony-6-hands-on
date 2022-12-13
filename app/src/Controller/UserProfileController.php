@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserProfileController extends AbstractController
 {
-    #[Route('/user/profile', name: 'app_user_profile')]
+    #[Route('/user/profile/edit', name: 'app_user_profile_edit')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Request $request, UserRepository $userRepository): Response
     {
@@ -31,7 +31,7 @@ class UserProfileController extends AbstractController
             $userRepository->save($user, true);
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Profile was updated');
 
-            return $this->redirectToRoute('app_user_profile');
+            return $this->redirectToRoute('app_user_profile_edit');
         }
 
         return $this->render('@main/user_profile/index.html.twig', [
