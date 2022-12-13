@@ -1,0 +1,16 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}User profile{% endblock %}
+
+{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> User profile {% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    {{ include('@main/user_profile/_form.html.twig', {form}) }}
+    <button
+            type="submit"
+            class="block w-full shadow-sm border-transparent bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2">
+        Save
+    </button>
+    {{ form_end(form) }}
+{% endblock %}
