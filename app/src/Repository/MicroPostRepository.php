@@ -39,11 +39,13 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    public function getAllWithComments(): array
+    public function getAllWithCommentsAndLikeBy(): array
     {
         return $this->createQueryBuilder('p')
             ->addSelect('c')
             ->leftJoin('p.comments', 'c')
+            ->addSelect('l')
+            ->leftJoin('p.likedBy', 'l')
             ->orderBy('p.id', 'desc')
             ->getQuery()
             ->getResult();
