@@ -1,0 +1,4 @@
+<a class="flex-auto border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
+   href="{{ path(route_name, {id: post.id}) }}">{{ title }} <span
+            class="px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">{{ post.likedBy.count }}</span>
+</a>

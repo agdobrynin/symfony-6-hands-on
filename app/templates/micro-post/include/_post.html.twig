@@ -9,9 +9,11 @@
     </div>
     <div class="pt-5 border-b p-4 border-x rounded-b-lg border-slate-800 bg-slate-100 dark:border-slate-200 dark:bg-slate-900">
         <div class="mb-5 drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
-            <a class="flex-auto border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700" href="#">
-                Like <span class="px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">1</span>
-            </a>
+            {% if post.likedBy.contains(app.user) %}
+                {{ include('@mp/include/_like_unlike.html.twig', {title: 'Unlike', post, route_name: 'app_unlike'}) }}
+            {% else %}
+                {{ include('@mp/include/_like_unlike.html.twig', {title: 'Like', post, route_name: 'app_like'}) }}
+            {% endif %}
         </div>
         <div class="flex drop-shadow-lg dark:drop-shadow-[0_4px_4px_rgba(255,255,255,0.25)]">
             {% if is_granted(constant('\\App\\Entity\\MicroPost::VOTER_EDIT'), post) %}

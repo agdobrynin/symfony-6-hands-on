@@ -16,7 +16,10 @@
                     <div class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full text-3xl w-8 h-8 ring-2 right-white dark:ring-gray-600 mr-2"></div>
                     <div>
                         <div class="font-medium text-gray-800 dark:text-gray-300">
-                            Author: {{ comment.author.userProfile.name|default(post.author.email|mask_email) }}</div>
+                            Author: <a
+                                    class="underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300"
+                                    href="{{ path('app_profile_view', {id: post.author.id.toRfc4122}) }}">{{ comment.author.userProfile.name|default(post.author.email|mask_email) }}</a>
+                        </div>
                         <div class="font-light text-gray-500 dark:text-gray-500">
                             When: {{ comment.id.datetime|date }}</div>
                     </div>

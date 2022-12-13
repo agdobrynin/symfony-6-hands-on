@@ -38,15 +38,14 @@
     </div>
     <div class="flex justify-end drop-shadow-lg dark:drop-shadow-[0_3px_3px_rgba(255,255,255,0.25)]">
         <div class="text-sm text-gray-500 dark:text-gray-400">
+            {% set class_user_menu = 'underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300' %}
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                {% set class_user_menu = 'underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300' %}
                 <a class="{{ class_user_menu }}" href="{{ path('app_micro_post_add') }}">Add post</a>
                 <a class="ml-2 {{ class_user_menu }}" href="{{ path('app_user_profile_edit') }}">Profile settings</a>
                 <a class="ml-2 {{ class_user_menu }}" href="{{ path('app_logout') }}">Logout</a>
             {% else %}
-                <a class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2"
-                   href="{{ path('app_login') }}">Login</a>
-                <a class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2"
+                <a class="ml-2 text-gray-900 dark:text-gray-300 {{ class_user_menu }}" href="{{ path('app_login') }}">Login</a>
+                <a class="ml-2 text-gray-900 dark:text-gray-300 {{ class_user_menu }}"
                    href="{{ path('app_register') }}">Register</a>
             {% endif %}
         </div>
