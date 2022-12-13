@@ -37,4 +37,7 @@
     {% else %}
         <p class="mt-4">Profile is empty</p>
     {% endif %}
+    <div class="mt-8">
+        {{ include('@main/micro-post/include/_post_list.html.twig', {posts: user.microPosts}) }}
+    </div>
 {% endblock %}
