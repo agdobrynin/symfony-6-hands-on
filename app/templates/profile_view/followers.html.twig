@@ -1,0 +1,14 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}Followers of {{ user.userProfile.name|default(user.email|mask_email) }}{% endblock %}
+
+{% block bradCrumbs %}
+    <span class="text-2xl">&rarr;</span> User profile
+    <span class="text-2xl">&rarr;</span> Followers
+{% endblock %}
+
+{% block body %}
+    {{ include('@main/profile_view/_profile_header.html.twig') }}
+    {{ include('@main/profile_view/_profile_tabs.html.twig') }}
+    {{ include('@main/shared/_follow.html.twig', {users: user.followers}) }}
+{% endblock %}

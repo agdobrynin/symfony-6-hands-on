@@ -22,7 +22,7 @@ security:
                 login_path: app_login
                 check_path: app_login
                 default_target_path: app_micro_post_list
-                use_referer: true
+                # use_referer: true
             logout:
                 path: app_logout
             # activate different ways to authenticate

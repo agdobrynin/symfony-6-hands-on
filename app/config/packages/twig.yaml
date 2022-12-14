@@ -5,8 +5,9 @@ twig:
     form_themes:
         - 'themes/custom/form_layout.html.twig'
     paths:
-        '%kernel.project_dir%/templates': main
+      '%kernel.project_dir%/templates': main
         '%kernel.project_dir%/templates/micro-post': mp
+        '%kernel.project_dir%/templates/shared': shared
 
 when@test:
     twig:
