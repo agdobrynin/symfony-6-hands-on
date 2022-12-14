@@ -1,0 +1,10 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}Top liked posts{% endblock %}
+
+{% block bradCrumbs %} <span class="text-2xl">&rarr;</span> Top liked posts {% endblock %}
+
+{% block body %}
+    {{ include('@mp/_post_tabs.html.twig') }}
+    {{ include('@mp/include/_post_list.html.twig', { posts }) }}
+{% endblock %}

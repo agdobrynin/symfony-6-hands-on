@@ -1,7 +1,10 @@
 {% extends '@main/base.html.twig' %}
 
-{% block title %}List of posts{% endblock %}
+{% block title %}All posts{% endblock %}
+
+{% block bradCrumbs %} <span class="text-2xl">&rarr;</span> All posts {% endblock %}
 
 {% block body %}
-    {{ include('@main/micro-post/include/_post_list.html.twig', {posts}) }}
+    {{ include('@mp/_post_tabs.html.twig') }}
+    {{ include('@mp/include/_post_list.html.twig', {posts}) }}
 {% endblock %}

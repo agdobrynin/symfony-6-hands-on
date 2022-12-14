@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Ulid;
@@ -66,6 +68,58 @@ class MicroPostRepository extends ServiceEntityRepository
             ->setParameter(':author', $author instanceof User ? $author->getId()->toRfc4122() : $author)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getPostsByAuthors(array|Collection $authors): array
+    {
+        $ids = [];
+
+        foreach ($authors as $author) {
+            $ids[] = $author->getId()->toRfc4122();
+        }
+
+        if (empty($ids)) {
+            return [];
+        }
+
+
+        return $this->getAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthor: true,
+            withProfile: true
+        )
+            ->where('mp.author IN (:authors)')
+            ->setParameter(':authors', $ids)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getPostsTopLiked(int $likeMoreOrEqual, ?int $limit = null): array
+    {
+        $query = $this->getAllQuery(
+            withLikes: true,
+        )->select('mp.id')
+            ->groupBy('mp.id')
+            ->having('COUNT(likedBy) >= :likeMoreOrEqual')
+            ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual);
+
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+
+        $ids = $query->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+
+        return $this->getAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthor: true,
+            withProfile: true
+        )
+            ->where('mp.id in (:ids)')
+            ->setParameter(':ids', $ids)
+            ->getQuery()->getResult();
     }
 
     private function getAllQuery(

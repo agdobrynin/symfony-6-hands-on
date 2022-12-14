@@ -31,7 +31,7 @@ class UserProfileController extends AbstractController
             $userRepository->save($user, true);
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Profile was updated');
 
-            return $this->redirectToRoute('app_user_profile_edit');
+            return $this->redirectToRoute('app_profile_view', ['id' => $user->getId()->toRfc4122()]);
         }
 
         return $this->render('@main/user_profile/index.html.twig', [
