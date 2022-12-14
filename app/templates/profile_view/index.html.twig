@@ -5,7 +5,10 @@
 {% block bradCrumbs %}<span class="text-2xl">&rarr;</span> User profile{% endblock %}
 
 {% block body %}
-    <div class="text-2xl mb-2">Blogger: {{ user.userProfile.name ?? user.email|mask_email }}</div>
+    <div class="flex flex-wrap mb-2 gap-8 items-center">
+        <div class="text-2xl">Blogger: {{ user.userProfile.name ?? user.email|mask_email }}</div>
+        <div>{{ include('@mp/include/_follow_button.html.twig', {user}) }}</div>
+    </div>
     {% if user.userProfile %}
         {% set href_class = 'underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300' %}
         <hr>
