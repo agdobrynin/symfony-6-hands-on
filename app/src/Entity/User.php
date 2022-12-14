@@ -57,11 +57,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $bannedUntil = null;
 
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'following')]
+    #[ORM\JoinTable('followers')]
+    private Collection $followers;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'followers')]
+    private Collection $following;
+
     public function __construct()
     {
         $this->likedPosts = new ArrayCollection();
         $this->microPosts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
     }
 
     public function getId(): ?Ulid
@@ -262,6 +271,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBannedUntil(?\DateTimeInterface $bannedUntil): self
     {
         $this->bannedUntil = $bannedUntil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function follow(self $follower): self
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+        }
+
+        return $this;
+    }
+
+    public function unfollow(self $follower): self
+    {
+        $this->followers->removeElement($follower);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowing(): Collection
+    {
+        return $this->following;
+    }
+
+    public function addFollowing(self $following): self
+    {
+        if (!$this->following->contains($following)) {
+            $this->following->add($following);
+            $following->follow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(self $following): self
+    {
+        if ($this->following->removeElement($following)) {
+            $following->unfollow($this);
+        }
 
         return $this;
     }
