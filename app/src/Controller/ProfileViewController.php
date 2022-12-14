@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\MicroPostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,10 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileViewController extends AbstractController
 {
     #[Route('/profile/{id}/view', name: 'app_profile_view')]
-    public function index(User $user): Response
+    public function index(User $user, MicroPostRepository $microPostRepository): Response
     {
         return $this->render('@main/profile_view/index.html.twig', [
             'user' => $user,
+            'posts' => $microPostRepository->getPostsByAuthor($user)
         ]);
     }
 

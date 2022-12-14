@@ -13,7 +13,7 @@ class MicroPostListController extends AbstractController
     #[Route('/', name: 'app_micro_post_list', methods: 'get')]
     public function index(MicroPostRepository $repository): Response
     {
-        $posts = $repository->getAllWithCommentsAndLikeBy();
+        $posts = $repository->getPostsForIndex();
 
         return $this->render('@mp/list.html.twig', ['posts' => $posts]);
     }

@@ -10,5 +10,5 @@
 {% block body %}
     {{ include('@main/profile_view/_profile_header.html.twig') }}
     {{ include('@main/profile_view/_profile_tabs.html.twig') }}
-    {{ include('@main/micro-post/include/_post_list.html.twig', {posts: user.microPosts}) }}
+    {{ include('@main/micro-post/include/_post_list.html.twig', {posts}) }}
 {% endblock %}
