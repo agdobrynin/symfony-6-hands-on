@@ -32,7 +32,7 @@ final class Version20221214061247 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
+        // $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE followers DROP CONSTRAINT FK_8408FDA73AD8644E');
         $this->addSql('ALTER TABLE followers DROP CONSTRAINT FK_8408FDA7233D34C1');
         $this->addSql('DROP TABLE followers');
