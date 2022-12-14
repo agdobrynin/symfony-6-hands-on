@@ -4,19 +4,19 @@
             {% block content %}
                 Posts <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ user.microPosts.count }}</span>
             {% endblock %}
-            {% block path %} {{ url('app_profile_view', {id: user.id}) }} {% endblock %}
+            {% block path %} {{ url('app_profile_view', {id: user.id.toRfc4122}) }} {% endblock %}
         {% endembed %}
         {% embed '@main/shared/_tab.html.twig' with {route: 'app_profile_followers', classes: 'ml-4'} %}
             {% block content %}
                 Followers <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ user.followers.count }}</span>
             {% endblock %}
-            {% block path %} {{ url('app_profile_followers', {id: user.id}) }} {% endblock %}
+            {% block path %} {{ url('app_profile_followers', {id: user.id.toRfc4122}) }} {% endblock %}
         {% endembed %}
         {% embed '@main/shared/_tab.html.twig' with {route: 'app_profile_following', classes: 'ml-4'} %}
             {% block content %}
                 Following <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ user.following.count }}</span>
             {% endblock %}
-            {% block path %} {{ url('app_profile_following', {id: user.id}) }} {% endblock %}
+            {% block path %} {{ url('app_profile_following', {id: user.id.toRfc4122}) }} {% endblock %}
         {% endembed %}
     {% endblock %}
 {% endembed %}
