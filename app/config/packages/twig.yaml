@@ -3,12 +3,12 @@ twig:
   globals:
     flash_type_service: '@App\Service\FlashTypeService'
     profile_images_url: '%micro_post.profile_images_url%'
-    form_themes:
-      - 'themes/custom/form_layout.html.twig'
-    paths:
-      '%kernel.project_dir%/templates': main
-      '%kernel.project_dir%/templates/micro-post': mp
-      '%kernel.project_dir%/templates/shared': shared
+  form_themes:
+    - 'themes/custom/form_layout.html.twig'
+  paths:
+    '%kernel.project_dir%/templates': main
+    '%kernel.project_dir%/templates/micro-post': mp
+    '%kernel.project_dir%/templates/shared': shared
 
 when@test:
     twig:
