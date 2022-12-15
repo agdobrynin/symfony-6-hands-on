@@ -1,0 +1,4 @@
+<img
+        alt="Profile image"
+        {% if profile and profile.avatarImage %}src="{{ profile_images_url ~ profile.avatarImage }}"{% endif %}
+        class="avatar w-{{ width }} h-{{ height }} object-cover ring-2 ring-gray-500 bg-gray-200 rounded-full dark:border-gray-200 dark:ring-gray-200 dark:bg-gray-700">

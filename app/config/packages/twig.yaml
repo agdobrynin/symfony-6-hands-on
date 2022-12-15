@@ -1,12 +1,14 @@
 twig:
-    default_path: '%kernel.project_dir%/templates'
-    globals:
-        flash_type_service: '@App\Service\FlashTypeService'
+  default_path: '%kernel.project_dir%/templates'
+  globals:
+    flash_type_service: '@App\Service\FlashTypeService'
+    profile_images_url: '%micro_post.profile_images_url%'
     form_themes:
-        - 'themes/custom/form_layout.html.twig'
+      - 'themes/custom/form_layout.html.twig'
     paths:
       '%kernel.project_dir%/templates': main
       '%kernel.project_dir%/templates/micro-post': mp
+      '%kernel.project_dir%/templates/shared': shared
 
 when@test:
     twig:

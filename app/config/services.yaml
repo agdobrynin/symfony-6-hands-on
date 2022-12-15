@@ -9,6 +9,7 @@ parameters:
     micro_post.top_likes.min: '%env(int:TOP_LIKES_MIN_LIKE)%'
     micro_post.top_likes.max_result: '%env(int:TOP_LIKES_MAX_RESULT)%'
     micro_post.profile_images_dir: '%kernel.project_dir%/public/uploads/profile_avatars'
+    micro_post.profile_images_url: '/uploads/profile_avatars/'
     micro_post.profile_image.max_size: '250k'
 services:
     # default configuration for services in *this* file

@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class ProfileUploadImageType extends AbstractType
 {
@@ -29,6 +30,9 @@ class ProfileUploadImageType extends AbstractType
                         maxSize: $maxSize,
                         mimeTypes: ['image/jpeg', 'image/png'],
                         mimeTypesMessage: 'Please choose valid image file types: jpg, png'
+                    ),
+                    new NotNull(
+                        message: 'Choose an image to upload for avatar'
                     )
                 ]
             ]);;

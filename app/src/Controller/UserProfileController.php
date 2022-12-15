@@ -89,7 +89,8 @@ class UserProfileController extends AbstractController
         }
 
         return $this->render('@main/user_profile/image_upload.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'user' => $user,
         ]);
     }
 }
