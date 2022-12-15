@@ -61,7 +61,7 @@ class UserProfileController extends AbstractController
             $uploadFile = $form->get('avatar')->getData();
             $fileName = sprintf('%s-%s.%s',
                 (new UuidV4())->toRfc4122(),
-                $slugger->slug($uploadFile->getClientOriginalName()),
+                substr($slugger->slug($uploadFile->getClientOriginalName()), 0, 200),
                 $uploadFile->getClientOriginalExtension()
             );
 
