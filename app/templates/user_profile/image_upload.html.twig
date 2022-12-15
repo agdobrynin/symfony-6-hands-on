@@ -1,0 +1,23 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}Profile avatar{% endblock %}
+
+{% block bradCrumbs %}<span class="text-2xl">&rarr;</span> Upload profile avatar {% endblock %}
+
+{% block body %}
+    {{ include('@main/user_profile/_user_profile_tabs.html.twig') }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div>
+        {{ form_label(form.avatar, null, {'label_attr': {'class': 'shadow-sm border-gray-300 hover:bg-gray-200 dark:border-gray-100 dark:text-gray-100 dark:hover:bg-gray-600 rounded-md border p-2 mt-1 mb-2 cursor-pointer' }}) }}
+        {{ form_widget(form.avatar, {'attr': {'class': 'hidden' }}) }}
+        {{ form_errors(form.avatar, {'error_item_class': 'pt-4'}) }}
+        {{ form_help(form.avatar, {'attr': {'class': 'pt-4'}}) }}
+    </div>
+
+    <button type="submit"
+            class="block w-full shadow-sm border-transparent bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white rounded-md border p-2 mt-4 mb-2">
+        Save image
+    </button>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% embed '@main/shared/_tabs.html.twig' %}
+    {% block tabs %}
+        {% embed '@main/shared/_tab.html.twig' with {route: 'app_user_profile_edit'} %}
+            {% block content %}
+                Edit user profile
+            {% endblock %}
+            {% block path %} {{ path('app_user_profile_edit') }} {% endblock %}
+        {% endembed %}
+        {% embed '@main/shared/_tab.html.twig' with {route: 'app_user_profile_upload_image', classes: 'ml-4'} %}
+            {% block content %}
+                Upload profile avatar
+            {% endblock %}
+            {% block path %} {{ path('app_user_profile_upload_image') }} {% endblock %}
+        {% endembed %}
+    {% endblock %}
+{% endembed %}

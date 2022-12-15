@@ -5,6 +5,7 @@
 {% block bradCrumbs %}<span class="text-2xl">&rarr;</span> Edit user profile {% endblock %}
 
 {% block body %}
+    {{ include('@main/user_profile/_user_profile_tabs.html.twig') }}
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
     {{ include('@main/user_profile/_form.html.twig', {form}) }}
     <button

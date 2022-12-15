@@ -47,6 +47,9 @@ class UserProfile
     #[ORM\JoinColumn(nullable: false)]
     private ?User $toUser = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatarImage = null;
+
     public function getId(): ?Ulid
     {
         return $this->id;
@@ -132,6 +135,18 @@ class UserProfile
     public function setToUser(User $toUser): self
     {
         $this->toUser = $toUser;
+
+        return $this;
+    }
+
+    public function getAvatarImage(): ?string
+    {
+        return $this->avatarImage;
+    }
+
+    public function setAvatarImage(?string $avatarImage): self
+    {
+        $this->avatarImage = $avatarImage;
 
         return $this;
     }
