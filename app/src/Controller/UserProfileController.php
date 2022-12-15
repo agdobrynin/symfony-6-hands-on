@@ -9,6 +9,7 @@ use App\Form\UserProfileType;
 use App\Repository\UserRepository;
 use App\Service\FlashTypeServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,7 +49,8 @@ class UserProfileController extends AbstractController
     public function uploadImage(
         Request          $request,
         UserRepository   $userRepository,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        Filesystem       $filesystem
     ): Response
     {
         $form = $this->createForm(ProfileUploadImageType::class);
@@ -59,25 +61,27 @@ class UserProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $uploadFile */
             $uploadFile = $form->get('avatar')->getData();
+
             $fileName = sprintf('%s-%s.%s',
                 (new UuidV4())->toRfc4122(),
-                substr($slugger->slug($uploadFile->getClientOriginalName()), 0, 200),
+                $slugger->slug($user->getEmail()),
                 $uploadFile->getClientOriginalExtension()
             );
 
-            $uploadFile->move(
-                $this->getParameter('micro_post.profile_images_dir'),
-                $fileName
-            );
+            $directoryProfileImages = $this->getParameter('micro_post.profile_images_dir');
 
+            $uploadFile->move($directoryProfileImages, $fileName);
 
             $profile = $user->getUserProfile() ?? new UserProfile();
-            // TODO remove previous image if exist
-            // if ($profile->getAvatarImage()) {}
+            $existAvatarFile = $profile->getAvatarImage();
 
             $profile->setAvatarImage($fileName);
             $user->setUserProfile($profile);
             $userRepository->save($user, true);
+
+            if ($existAvatarFile) {
+                $filesystem->remove($directoryProfileImages . '/' . $existAvatarFile);
+            }
 
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Avatar image was updated');
 
