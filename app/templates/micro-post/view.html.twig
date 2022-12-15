@@ -13,7 +13,7 @@
         {% for comment in post.comments %}
             <div>
                 <div class="flex items-center">
-                    <div class="inline-block bg-gray-200 dark:bg-gray-700 rounded-full text-3xl w-8 h-8 ring-2 right-white dark:ring-gray-600 mr-2"></div>
+                    <div class="mr-2">{{ include('@shared/_avatar.html.twig', {profile: comment.author.userProfile, width: 8, height: 8}) }}</div>
                     <div>
                         <div class="font-medium text-gray-800 dark:text-gray-300">
                             Author: <a
