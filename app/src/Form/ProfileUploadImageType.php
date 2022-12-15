@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,8 +11,14 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ProfileUploadImageType extends AbstractType
 {
+    public function __construct(private readonly ParameterBagInterface $parameterBag)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $maxSize = $this->parameterBag->get('micro_post.profile_image.max_size');
+
         $builder
             ->add('avatar', FileType::class, [
                 'label' => 'Choose an image to upload for avatar',
@@ -19,7 +26,7 @@ class ProfileUploadImageType extends AbstractType
                 'mapped' => false,
                 'constraints' => [
                     new File(
-                        maxSize: 1048576,
+                        maxSize: $maxSize,
                         mimeTypes: ['image/jpeg', 'image/png'],
                         mimeTypesMessage: 'Please choose valid image file types: jpg, png'
                     )
