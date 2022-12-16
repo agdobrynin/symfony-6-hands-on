@@ -34,7 +34,7 @@ class UserProfile
 
     #[ORM\Column(length: 50, nullable: true)]
     #[Assert\Length(min: 4, max: 50)]
-    #[Assert\Regex('/^([a-z0-9_]{4,50})$/i', message: 'Twitter user name is wrong')]
+    #[Assert\Regex('/^([a-z0-9_]{4,50})$/i', message: 'Twitter user name is wrong. Use a-z chars, digital chars and underscore char')]
     private ?string $twitterUsername = null;
 
     #[ORM\Column(length: 255, nullable: true)]
