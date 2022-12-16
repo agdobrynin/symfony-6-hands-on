@@ -1,8 +1,19 @@
 <div class="grid grid-cols-1">
     <div class="border-t p-4 border-x rounded-t-lg border-slate-800 bg-slate-200 dark:border-slate-200 dark:bg-slate-900">
-        <a class="underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300"
-           href="{{ path('app_profile_view', {id: post.author.id.toRfc4122}) }}">{{ post.author.userProfile.name|default(post.author.email|mask_email) }}</a>
-        <span class="font-light">at {{ post.id.dateTime|date }}</span>
+        <div class="flex items-center">
+            {% if showAvatarInPostBlock is defined and showAvatarInPostBlock == true %}
+                <div class="flex-none mr-4">
+                    <a href="{{ path('app_profile_view', {id: post.author.id.toRfc4122}) }}">
+                        {{ include('@shared/_avatar.html.twig', {profile: post.author.userProfile, width: 10, height: 10}) }}
+                    </a>
+                </div>
+            {% endif %}
+            <div>
+                <a class="underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300"
+                   href="{{ path('app_profile_view', {id: post.author.id.toRfc4122}) }}">{{ post.author.userProfile.name|default(post.author.email|mask_email) }}</a>
+                <span class="font-light">at {{ post.id.dateTime|date }}</span>
+            </div>
+        </div>
     </div>
     <div class="border p-4 border-x border-slate-800 dark:border-slate-200">
         <div class="drop-shadow-none">{{ post.content }}</div>

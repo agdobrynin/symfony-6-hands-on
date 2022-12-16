@@ -2,7 +2,10 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         {% for otherUser in users %}
             <div class="flex justify-between items-center p-4 border rounded-lg border-slate-800 bg-slate-200 dark:border-slate-200 dark:bg-slate-900">
-                <div>
+                <div class=flex-none">
+                    {{ include('@shared/_avatar.html.twig', {profile: otherUser.userProfile, width: 16, height: 16 }) }}
+                </div>
+                <div class="flex-1 ml-4">
                     <a href="{{ path('app_profile_view', { id: otherUser.id.toRfc4122 }) }}">
                         <div class="text-lg">
                             {{ otherUser.userProfile.name ?? otherUser.email|mask_email }}
