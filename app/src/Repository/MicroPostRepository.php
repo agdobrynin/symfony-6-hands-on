@@ -70,6 +70,20 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
+    {
+        return $this->getAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthor: true,
+            withProfile: true
+        )
+            ->where('mp.id = :post')
+            ->setParameter(':post', $post instanceof MicroPost ? $post->getId()->toRfc4122() : $post->toRfc4122())
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function getPostsByAuthors(array|Collection $authors): array
     {
         $ids = [];
