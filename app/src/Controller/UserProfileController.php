@@ -18,10 +18,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Uid\UuidV4;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
+#[Route('/user/profile')]
 class UserProfileController extends AbstractController
 {
-    #[Route('/user/profile/edit', name: 'app_user_profile_edit')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/edit', name: 'app_user_profile_edit')]
     public function edit(Request $request, UserRepository $userRepository): Response
     {
         /** @var User $user */
@@ -36,7 +37,7 @@ class UserProfileController extends AbstractController
             $userRepository->save($user, true);
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Profile was updated');
 
-            return $this->redirectToRoute('app_profile_view', ['id' => $user->getId()->toRfc4122()]);
+            return $this->redirectToRoute('app_user_profile_view');
         }
 
         return $this->render('@main/user_profile/edit.html.twig', [
@@ -44,8 +45,7 @@ class UserProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/user/profile/upload-image', name: 'app_user_profile_upload_image')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[Route('/upload-image', name: 'app_user_profile_upload_image')]
     public function uploadImage(
         Request          $request,
         UserRepository   $userRepository,
@@ -85,12 +85,21 @@ class UserProfileController extends AbstractController
 
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Avatar image was updated');
 
-            return $this->redirectToRoute('app_user_profile_upload_image');
+            return $this->redirectToRoute('app_user_profile_view');
         }
 
         return $this->render('@main/user_profile/image_upload.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
         ]);
+    }
+
+    #[Route('/view', name: 'app_user_profile_view')]
+    public function view(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return $this->render('@main/user_profile/view.html.twig', ['user' => $user]);
     }
 }

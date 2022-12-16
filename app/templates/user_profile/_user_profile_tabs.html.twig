@@ -12,5 +12,11 @@
             {% endblock %}
             {% block path %} {{ path('app_user_profile_upload_image') }} {% endblock %}
         {% endembed %}
+        {% embed '@main/shared/_tab.html.twig' with {route: 'app_user_profile_view'} %}
+            {% block content %}
+                View my profile
+            {% endblock %}
+            {% block path %} {{ path('app_user_profile_view') }} {% endblock %}
+        {% endembed %}
     {% endblock %}
 {% endembed %}

@@ -1,0 +1,19 @@
+{% extends '@main/base.html.twig' %}
+
+{% block title %}View my profile{% endblock %}
+
+{% block bradCrumbs %}
+    <span class="text-2xl">&rarr;</span> User profile
+    <span class="text-2xl">&rarr;</span> View
+{% endblock %}
+
+{% block body %}
+    {{ include('@main/user_profile/_user_profile_tabs.html.twig') }}
+    {{ include('@main/profile_view/_profile_header.html.twig', {user}) }}
+    <div class="mt-8">
+        <a
+                href="{{ path('app_profile_view', {id: user.id.toRfc4122}) }}"
+                class="shadow-sm border-gray-300 hover:bg-gray-200 dark:border-gray-100 dark:text-gray-100 dark:hover:bg-gray-600 rounded-md border p-2 mt-1 mb-2 cursor-pointer"
+        >My page with posts</a>
+    </div>
+{% endblock %}
