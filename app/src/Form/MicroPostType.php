@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\MicroPost;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +17,9 @@ class MicroPostType extends AbstractType
         $builder->add('content', TextareaType::class, [
             'help' => 'Enter text for micro post'
         ])
+            ->add('extraPrivacy', CheckboxType::class, [
+                'help' => 'Like and comment this post for my followers only'
+            ])
             ->add('save', SubmitType::class);
     }
 

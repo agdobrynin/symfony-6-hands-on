@@ -22,6 +22,7 @@ class LikeController extends AbstractController
     }
 
     #[Route('/like/{id}', name: 'app_like')]
+    #[IsGranted(MicroPost::VOTER_EXTRA_PRIVACY, 'post', 'This post can like followers only')]
     public function like(MicroPost $post): RedirectResponse
     {
         $post->addLikedBy($this->getUser());

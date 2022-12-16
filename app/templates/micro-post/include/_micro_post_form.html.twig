@@ -6,5 +6,13 @@
     {{ form_errors(form.content) }}
     {{ form_widget(form.content, {'attr': {'class': 'block w-full shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
     {{ form_help(form.content) }}
+
+    <div class="mt-4">
+        {{ form_widget(form.extraPrivacy, {'attr': {'class': 'shadow-sm border-gray-300 dark:border-transparent dark:text-gray-800 rounded-md border p-2 mt-1 mb-2'}}) }}
+        {{ form_label(form.extraPrivacy, null, {'label_attr': {'class': 'text-gray-700 dark:text-gray-300 font-medium'}}) }}
+        {{ form_errors(form.extraPrivacy) }}
+        {{ form_help(form.extraPrivacy, {'attr': {'class': 'text-sm mt-0'}}) }}
+    </div>
+
 </div>
 {{ form_end(form) }}

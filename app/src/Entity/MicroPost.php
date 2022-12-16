@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MicroPost
 {
     public const VOTER_EDIT = 'POST_EDIT';
-    public const VOTER_VIEW = 'POST_VIEW';
+    public const VOTER_EXTRA_PRIVACY = 'POST_EXTRA_PRIVACY';
     #[ORM\Id]
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -42,6 +42,9 @@ class MicroPost
     #[ORM\ManyToOne(inversedBy: 'microPosts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
+
+    #[ORM\Column]
+    private bool $extraPrivacy = false;
 
     public function __construct()
     {
@@ -139,6 +142,18 @@ class MicroPost
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function isExtraPrivacy(): bool
+    {
+        return $this->extraPrivacy;
+    }
+
+    public function setExtraPrivacy(bool $extraPrivacy): self
+    {
+        $this->extraPrivacy = $extraPrivacy;
 
         return $this;
     }

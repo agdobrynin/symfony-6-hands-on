@@ -19,6 +19,7 @@ class CommentAddController extends AbstractController
 {
     #[Route('/micro-post/{id}/comment', name: 'app_comment_add', methods: 'post|get')]
     #[IsGranted('ROLE_COMMENTER', null, 'You can\'t add comment with current roles')]
+    #[IsGranted(MicroPost::VOTER_EXTRA_PRIVACY, 'post', 'This post for followers only')]
     public function index(MicroPost $post, Request $request, CommentRepository $commentRepository): RedirectResponse|Response
     {
         $form = $this->createForm(CommentType::class, new Comment());
