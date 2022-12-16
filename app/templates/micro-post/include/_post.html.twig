@@ -34,7 +34,7 @@
                    href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
                 <span class="flex-none w-2"> </span>
             {% endif %}
-            {% if post.comments.count %}
+            {% if post.comments.count and app.current_Route != 'app_micro_post_view' %}
                 <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                    href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">
                     read comments
@@ -43,7 +43,7 @@
                 <span class="flex-none w-2"> </span>
             {% endif %}
 
-            {% if is_granted('ROLE_COMMENTER') %}
+            {% if is_granted('ROLE_COMMENTER') and  app.current_Route != 'app_comment_add' %}
                 <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                    href="{{ url('app_comment_add', {id: post.id.toRfc4122}) }}">add comment</a>
             {% endif %}
