@@ -6,6 +6,5 @@
 
 {% block body %}
     {{ include('@mp/_post_tabs.html.twig') }}
-    {% set showAvatarInPostBlock = true %}
-    {{ include('@mp/include/_post_list.html.twig', {posts}) }}
+    {{ include('@mp/include/_post_list.html.twig', {posts, showAvatarInPostBlock: true}) }}
 {% endblock %}
