@@ -11,6 +11,7 @@ parameters:
     micro_post.profile_images_url: '/uploads/profile_avatars/'
     micro_post.profile_images_dir: '%kernel.project_dir%/public%micro_post.profile_images_url%'
     micro_post.profile_image.max_size: '250k'
+    micro_post.page_size_on_index_page: '%env(int:PAGE_SIZE_ON_INDEX_PAGE)%'
 services:
     # default configuration for services in *this* file
     _defaults:

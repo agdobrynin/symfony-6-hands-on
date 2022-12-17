@@ -3,21 +3,31 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\PaginatorDto;
 use App\Entity\User;
 use App\Repository\MicroPostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MicroPostListController extends AbstractController
 {
+    public function __construct(private RequestStack $requestStack)
+    {
+    }
+
     #[Route('/', name: 'app_micro_post_list', methods: 'get')]
     public function index(MicroPostRepository $repository): Response
     {
-        $posts = $repository->getPostsForIndex();
+        $page = (int)$this->requestStack->getCurrentRequest()->get('page', 1);
+        $pageSize = $this->getParameter('micro_post.page_size_on_index_page');
+        $totalItems = $repository->getPostsCountForIndex();
+        $paginatorDto = new PaginatorDto($page, $totalItems, $pageSize);
+        $posts = $repository->getPostsForIndex($paginatorDto);
 
-        return $this->render('@mp/list.html.twig', ['posts' => $posts]);
+        return $this->render('@mp/list.html.twig', ['posts' => $posts, 'paginator' => $paginatorDto]);
     }
 
     #[Route('/top-likes', name: 'app_micro_post_list_top_likes', methods: 'get')]

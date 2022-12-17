@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\PaginatorDto;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -44,16 +45,31 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPostsForIndex(): array
+    public function getPostsCountForIndex()
+    {
+        return $this->createQueryBuilder('mp')
+            ->select('COUNT(mp.id)')
+            ->getQuery()
+            ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+    }
+
+    public function getPostsForIndex(PaginatorDto $paginatorDto): array
+    {
+        return $this->getPostsForIndexQuery()
+            ->setFirstResult($paginatorDto->firstResultIndex)
+            ->setMaxResults($paginatorDto->pageSize)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function getPostsForIndexQuery(): QueryBuilder
     {
         return $this->getAllQuery(
             withComments: true,
             withLikes: true,
             withAuthor: true,
             withProfile: true
-        )
-            ->getQuery()
-            ->getResult();
+        );
     }
 
     public function getPostsByAuthor(Ulid|User $author): array
