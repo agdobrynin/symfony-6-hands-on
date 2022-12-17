@@ -9,16 +9,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     {% block javascripts %}
         <script>
-            const params = new Proxy(new URLSearchParams(window.location.search), {
-                get: (searchParams, prop) => searchParams.get(prop),
-            });
+            const storageDarkThemeKey = "darkMode";
 
-            tailwind.config = {
-                darkMode: 'class',
-            };
-            if (null === params.dark) {
-                tailwind.config.darkMode = '';
-            }
+            tailwind.config.darkMode = window.localStorage.getItem(storageDarkThemeKey);
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const themeSwitcher = document.querySelector("#theme-switcher");
+
+                if (themeSwitcher) {
+                    themeSwitcher.addEventListener("click", (evt) => {
+                        tailwind.config.darkMode = evt.target.id === "dark-theme" ? "class" : "";
+                        window.localStorage.setItem(storageDarkThemeKey, tailwind.config.darkMode);
+                    });
+                }
+            });
         </script>
     {% endblock %}
 </head>
@@ -50,6 +54,12 @@
                 <a class="ml-2 text-gray-900 dark:text-gray-300 {{ class_user_menu }}"
                    href="{{ path('app_register') }}">Register</a>
             {% endif %}
+
+            <span id="theme-switcher" class="ml-2">
+               <span class="dark:hidden ">🌑 <a id="dark-theme"
+                                               class="cursor-pointer {{ class_user_menu }}">Dark theme</a></span>
+               <span class="hidden dark:inline">💡 <a id="lite-theme" class="cursor-pointer {{ class_user_menu }}">Lite theme</a></span>
+            </span>
         </div>
     </div>
 </div>
