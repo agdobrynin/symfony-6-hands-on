@@ -8,15 +8,13 @@ use App\Form\ProfileUploadImageType;
 use App\Form\UserProfileType;
 use App\Repository\UserRepository;
 use App\Service\FlashTypeServiceInterface;
+use App\Service\SetAvatarImageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\Uid\UuidV4;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 #[Route('/user/profile')]
@@ -47,10 +45,9 @@ class UserProfileController extends AbstractController
 
     #[Route('/upload-image', name: 'app_user_profile_upload_image')]
     public function uploadImage(
-        Request          $request,
-        UserRepository   $userRepository,
-        SluggerInterface $slugger,
-        Filesystem       $filesystem
+        Request                 $request,
+        UserRepository          $userRepository,
+        SetAvatarImageInterface $setAvatarImage
     ): Response
     {
         $form = $this->createForm(ProfileUploadImageType::class);
@@ -61,27 +58,17 @@ class UserProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $uploadFile */
             $uploadFile = $form->get('avatar')->getData();
-
-            $fileName = sprintf('%s-%s.%s',
-                (new UuidV4())->toRfc4122(),
-                $slugger->slug($user->getEmail()),
-                $uploadFile->getClientOriginalExtension()
-            );
-
             $directoryProfileImages = $this->getParameter('micro_post.profile_images_dir');
 
-            $uploadFile->move($directoryProfileImages, $fileName);
+            $setAvatarImage->set(
+                publicDirectoryProfileImages: $directoryProfileImages,
+                file: $uploadFile->getFileInfo()->getRealPath(),
+                fileExtension: $uploadFile->getClientOriginalExtension(),
+                user: $user,
+                moveFile: true
+            );
 
-            $profile = $user->getUserProfile() ?? new UserProfile();
-            $existAvatarFile = $profile->getAvatarImage();
-
-            $profile->setAvatarImage($fileName);
-            $user->setUserProfile($profile);
             $userRepository->save($user, true);
-
-            if ($existAvatarFile) {
-                $filesystem->remove($directoryProfileImages . '/' . $existAvatarFile);
-            }
 
             $this->addFlash(FlashTypeServiceInterface::SUCCESS, 'Avatar image was updated');
 
