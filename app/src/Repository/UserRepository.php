@@ -64,6 +64,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->getUserQuery(
             withProfile: true,
             withPosts: true,
+            withFollowers: true,
+            withFollowing: true
         )
             ->where('u = :user')
             ->setParameter(':user', $this->getIdAsRfc4122($user))
@@ -75,7 +77,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->getUserQuery(
             withProfile: true,
+            withPosts: true,
             withFollowers: true,
+            withFollowing: true
         )
             ->where('u.id = :user_id')
             ->setParameter(':user_id', $this->getIdAsRfc4122($user))
@@ -87,7 +91,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->getUserQuery(
             withProfile: true,
-            withFollowing: true,
+            withPosts: true,
+            withFollowers: true,
+            withFollowing: true
         )
             ->where('u.id = :user_id')
             ->setParameter(':user_id', $this->getIdAsRfc4122($user))
@@ -124,17 +130,23 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         if ($withPosts) {
             $query->leftJoin('u.microPosts', 'microPosts')
-                ->addSelect('microPosts');
+                ->addSelect('microPosts')
+                ->leftJoin('microPosts.author', 'microPostsAuthor')
+                ->addSelect('microPostsAuthor');
         }
 
         if ($withFollowers) {
-            $query->leftJoin('u.followers', 'followers')
-                ->addSelect('followers');
+            $query->leftJoin('u.followers', 'followersUsers')
+                ->addSelect('followersUsers')
+                ->leftJoin('followersUsers.userProfile', 'followersUsersProfile')
+                ->addSelect('followersUsersProfile');
         }
 
         if ($withFollowing) {
-            $query->leftJoin('u.following', 'following')
-                ->addSelect('following');
+            $query->leftJoin('u.following', 'followingUsers')
+                ->addSelect('followingUsers')
+                ->leftJoin('followingUsers.userProfile', 'followingUsersProfile')
+                ->addSelect('followingUsersProfile');
         }
 
         return $query;
