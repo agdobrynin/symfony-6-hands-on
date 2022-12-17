@@ -38,7 +38,7 @@ docker-compose exec php-fpm bash
 symfony console doctrine:fixtures:load -n
 ```
 
-открыть в брайзере адрес http://localhost для просмотра проекта.
+открыть в браузере адрес http://localhost для просмотра проекта.
 
 #### Контейнеры и их назначение:
 
