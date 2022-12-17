@@ -45,7 +45,7 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPostsCountForIndex()
+    public function getPostsCountForIndex(): int
     {
         return $this->createQueryBuilder('mp')
             ->select('COUNT(mp.id)')
@@ -100,13 +100,25 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function getPostsByAuthors(array|Collection $authors): array
+    public function getPostsByAuthorsCount(array|Collection $authors): int
     {
-        $ids = [];
+        $ids = $this->getAuthorsIds($authors);
 
-        foreach ($authors as $author) {
-            $ids[] = $author->getId()->toRfc4122();
+        if (empty($ids)) {
+            return 0;
         }
+
+        return $this->createQueryBuilder('mp')
+            ->select('COUNT(mp.id)')
+            ->where('mp.author IN (:authors)')
+            ->setParameter(':authors', $ids)
+            ->getQuery()
+            ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+    }
+
+    public function getPostsByAuthors(array|Collection $authors, PaginatorDto $paginatorDto): array
+    {
+        $ids = $this->getAuthorsIds($authors);
 
         if (empty($ids)) {
             return [];
@@ -121,6 +133,8 @@ class MicroPostRepository extends ServiceEntityRepository
         )
             ->where('mp.author IN (:authors)')
             ->setParameter(':authors', $ids)
+            ->setFirstResult($paginatorDto->firstResultIndex)
+            ->setMaxResults($paginatorDto->pageSize)
             ->getQuery()
             ->getResult();
     }
@@ -202,5 +216,16 @@ class MicroPostRepository extends ServiceEntityRepository
         }
 
         return $query->orderBy('mp.id', 'desc');
+    }
+
+    private function getAuthorsIds(Collection|array $authors)
+    {
+        $ids = [];
+
+        foreach ($authors as $author) {
+            $ids[] = $author->getId()->toRfc4122();
+        }
+
+        return $ids;
     }
 }

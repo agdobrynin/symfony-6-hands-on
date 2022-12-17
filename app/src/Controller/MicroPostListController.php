@@ -27,7 +27,10 @@ class MicroPostListController extends AbstractController
         $paginatorDto = new PaginatorDto($page, $totalItems, $pageSize);
         $posts = $repository->getPostsForIndex($paginatorDto);
 
-        return $this->render('@mp/list.html.twig', ['posts' => $posts, 'paginator' => $paginatorDto]);
+        return $this->render('@mp/list.html.twig', [
+            'posts' => $posts,
+            'paginator' => $paginatorDto
+        ]);
     }
 
     #[Route('/top-likes', name: 'app_micro_post_list_top_likes', methods: 'get')]
@@ -46,8 +49,19 @@ class MicroPostListController extends AbstractController
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
-        $posts = $repository->getPostsByAuthors($currentUser->getFollowing());
+        $followAuthors = $currentUser->getFollowing();
+        $page = (int)$this->requestStack->getCurrentRequest()->get('page', 1);
+        $pageSize = $this->getParameter('micro_post.page_size_on_index_page');
 
-        return $this->render('@mp/follows.html.twig', ['posts' => $posts]);
+        $totalItems = $repository->getPostsByAuthorsCount($followAuthors);
+
+        $paginatorDto = new PaginatorDto($page, $totalItems, $pageSize);
+
+        $posts = $repository->getPostsByAuthors($followAuthors, $paginatorDto);
+
+        return $this->render('@mp/follows.html.twig', [
+            'posts' => $posts,
+            'paginator' => $paginatorDto
+        ]);
     }
 }

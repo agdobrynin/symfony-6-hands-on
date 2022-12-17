@@ -6,6 +6,30 @@
 
 {% block body %}
     {{ include('@mp/_post_tabs.html.twig') }}
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mb-4">
+        {% embed '@shared/_paginator.html.twig' with { paginator } %}
+            {% block first %}{{ path('app_micro_post_list_follows', {page: 1}) }}{% endblock %}
+
+            {% block previous %}{{ path('app_micro_post_list_follows', {page: (paginator.page-1)}) }}{% endblock %}
+
+            {% block next %}{{ path('app_micro_post_list_follows', {page: (paginator.page+1)}) }}{% endblock %}
+
+            {% block last %}{{ path('app_micro_post_list_follows', {page: paginator.totalPages}) }}{% endblock %}
+
+            {% block paginatorName %}
+                Follow posts pages
+            {% endblock %}
+        {% endembed %}
+    </div>
+
     {% set showAvatarInPostBlock = true %}
     {{ include('@mp/include/_post_list.html.twig', { posts }) }}
+
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
+        {% embed '@shared/_paginator.html.twig'  with { paginator } %}
+            {% block previous %}{{ path('app_micro_post_list_follows', {page: (paginator.page-1)}) }}{% endblock %}
+
+            {% block next %}{{ path('app_micro_post_list_follows', {page: (paginator.page+1)}) }}{% endblock %}
+        {% endembed %}
+    </div>
 {% endblock %}
