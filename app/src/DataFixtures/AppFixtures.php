@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Entity\UserProfile;
@@ -38,7 +39,9 @@ class AppFixtures extends Fixture
 
         $fixtureUsers[] = new UserFixtureDto('editor@email.com', ['ROLE_EDITOR'], 'Editor ✍', true);
         $fixtureUsers[] = new UserFixtureDto('monkey@email.com', [], 'Monkey man 🐵', true);
-        $fixtureUsers[] = new UserFixtureDto('user@email.com', [], 'User 😑', false);
+        $fixtureUsers[] = new UserFixtureDto('user@email.com', [], 'User 😑', true);
+        $fixtureUsers[] = new UserFixtureDto('view@email.com', [], 'Viewer 🖐', true);
+
         $avatarFixturesImagesDir = dirname(__FILE__) . '/profile_images/';
         $publicDirectoryProfileImages = $this->containerBag->get('micro_post.profile_images_dir');
 
@@ -75,11 +78,32 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 500; $i++) {
             $microPost = (new MicroPost())
                 ->setContent($faker->realTextBetween(5, 140))
                 ->setAuthor($users[array_rand($users)]);
+            // set random likes
+            foreach (array_rand($users, 3) as $index => $userIndex) {
+                $microPost->addLikedBy($users[$userIndex]);
+            }
+
             $manager->persist($microPost);
+        }
+
+        $manager->flush();
+
+        // add comments for posts
+        $posts = $manager->getRepository(MicroPost::class)->findAll();
+
+        foreach ($posts as $post) {
+            for ($c = 0; $c < rand(0, 50); $c++) {
+                $comment = (new Comment())
+                    ->setAuthor($users[array_rand($users)])
+                    ->setContent($faker->realTextBetween(150, 300))
+                    ->setMicroPost($post);
+
+                $manager->persist($comment);
+            }
         }
 
         $manager->flush();
