@@ -73,7 +73,7 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
     {
         return $this->getAllQuery(
-            withComments: true,
+            withCommentsAuthor: true,
             withLikes: true,
             withAuthor: true,
             withProfile: true
@@ -136,8 +136,21 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getQuery()->getResult();
     }
 
+    public function getPostByUuidWithCommentsLikesAuthorsProfiles(string $uuid): ?MicroPost
+    {
+        return $this->getAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthor: true,
+            withProfile: true
+        )->where('mp.id = :uuid')
+            ->setParameter(':uuid', $uuid)
+            ->getQuery()->getSingleResult();
+    }
+
     private function getAllQuery(
         bool $withComments = false,
+        bool $withCommentsAuthor = false,
         bool $withLikes = false,
         bool $withAuthor = false,
         bool $withProfile = false
@@ -145,9 +158,16 @@ class MicroPostRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('mp');
 
-        if ($withComments) {
+        if ($withComments || $withCommentsAuthor) {
             $query->leftJoin('mp.comments', 'comments')
                 ->addSelect('comments');
+        }
+
+        if ($withCommentsAuthor) {
+            $query->leftJoin('comments.author', 'commentsAuthor')
+                ->addSelect('commentsAuthor');
+            $query->leftJoin('commentsAuthor.userProfile', 'commentsAuthorUserProfile')
+                ->addSelect('commentsAuthorUserProfile');
         }
 
         if ($withLikes) {
