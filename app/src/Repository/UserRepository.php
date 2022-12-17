@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -58,26 +59,57 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
-    public function getUserForUserProfilePage(User|Ulid $user): ?User
+    public function getUserForUserProfilePage(User|string $user): ?User
     {
-        $ulid = $user instanceof User ? $user->getId()->toRfc4122() : $user->toRfc4122();
-
         return $this->getUserQuery(
             withProfile: true,
             withPosts: true,
-            withFollowers: true,
-            withFollowing: true
         )
             ->where('u = :user')
-            ->setParameter(':user', $ulid)
+            ->setParameter(':user', $this->getIdAsRfc4122($user))
             ->getQuery()
             ->getSingleResult();
     }
 
+    public function getUserForUserProfileFollowers(User|string $user): ?User
+    {
+        return $this->getUserQuery(
+            withProfile: true,
+            withFollowers: true,
+        )
+            ->where('u.id = :user_id')
+            ->setParameter(':user_id', $this->getIdAsRfc4122($user))
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function getUserForUserProfileFollowing(User|string $user): ?User
+    {
+        return $this->getUserQuery(
+            withProfile: true,
+            withFollowing: true,
+        )
+            ->where('u.id = :user_id')
+            ->setParameter(':user_id', $this->getIdAsRfc4122($user))
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    private function getIdAsRfc4122(User|string $subject): string
+    {
+        if ($subject instanceof User) {
+            return $subject->getId()->toRfc4122();
+        }
+
+        if (Ulid::isValid($subject)) {
+            return Ulid::fromString($subject)->toRfc4122();
+        }
+
+        return Uuid::fromString($subject)->toRfc4122();
+    }
+
     private function getUserQuery(
         bool $withProfile = false,
-        bool $withComments = false,
-        bool $withLikes = false,
         bool $withPosts = false,
         bool $withFollowers = false,
         bool $withFollowing = false
@@ -88,16 +120,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         if ($withProfile) {
             $query->leftJoin('u.userProfile', 'userProfile')
                 ->addSelect('userProfile');
-        }
-
-        if ($withComments) {
-            $query->leftJoin('u.comments', 'comments')
-                ->addSelect('comments');
-        }
-
-        if ($withLikes) {
-            $query->leftJoin('u.likedPosts', 'likedPosts')
-                ->addSelect('likedPosts');
         }
 
         if ($withPosts) {
