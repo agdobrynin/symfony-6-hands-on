@@ -57,7 +57,7 @@ class MicroPostListController extends AbstractController
 
         $paginatorDto = new PaginatorDto($page, $totalItems, $pageSize);
 
-        $posts = $repository->getPostsByAuthors($followAuthors, $paginatorDto);
+        $posts = $repository->getPostsByAuthors($followAuthors, $paginatorDto) ?: [];
 
         return $this->render('@mp/follows.html.twig', [
             'posts' => $posts,

@@ -9,6 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Ulid;
 
@@ -53,13 +54,13 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
     }
 
-    public function getPostsForIndex(PaginatorDto $paginatorDto): array
+    public function getPostsForIndex(PaginatorDto $paginatorDto): Paginator
     {
-        return $this->getPostsForIndexQuery()
+        $query = $this->getPostsForIndexQuery()
             ->setFirstResult($paginatorDto->firstResultIndex)
-            ->setMaxResults($paginatorDto->pageSize)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($paginatorDto->pageSize);
+
+        return new Paginator($query);
     }
 
     private function getPostsForIndexQuery(): QueryBuilder
@@ -116,16 +117,16 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
     }
 
-    public function getPostsByAuthors(array|Collection $authors, PaginatorDto $paginatorDto): array
+    public function getPostsByAuthors(array|Collection $authors, PaginatorDto $paginatorDto): ?Paginator
     {
         $ids = $this->getAuthorsIds($authors);
 
         if (empty($ids)) {
-            return [];
+            return null;
         }
 
 
-        return $this->getAllQuery(
+        $query = $this->getAllQuery(
             withComments: true,
             withLikes: true,
             withAuthor: true,
@@ -134,9 +135,9 @@ class MicroPostRepository extends ServiceEntityRepository
             ->where('mp.author IN (:authors)')
             ->setParameter(':authors', $ids)
             ->setFirstResult($paginatorDto->firstResultIndex)
-            ->setMaxResults($paginatorDto->pageSize)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults($paginatorDto->pageSize);
+
+        return new Paginator($query);
     }
 
     public function getPostsTopLiked(int $likeMoreOrEqual, ?int $limit = null): array

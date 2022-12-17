@@ -14,7 +14,7 @@
     {% endif %}
     <div>
         {% block paginatorName %}{% endblock %}
-        {{ paginator.page }} of {{ paginator.totalPages }}
+        Page {{ paginator.page }} of {{ paginator.totalPages }}
     </div>
     {% if paginator.page < paginator.totalPages %}
         <div>
