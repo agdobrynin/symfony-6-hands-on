@@ -37,40 +37,16 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(MicroPost $post, bool $flush = false): void
+    public function getPostsForIndex(int $page, int $pageSize): PaginatorDto
     {
-        $this->getEntityManager()->remove($post);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function getPostsCountForIndex(): int
-    {
-        return $this->createQueryBuilder('mp')
-            ->select('COUNT(mp.id)')
-            ->getQuery()
-            ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
-    }
-
-    public function getPostsForIndex(PaginatorDto $paginatorDto): Paginator
-    {
-        $query = $this->getPostsForIndexQuery()
-            ->setFirstResult($paginatorDto->firstResultIndex)
-            ->setMaxResults($paginatorDto->pageSize);
-
-        return new Paginator($query);
-    }
-
-    private function getPostsForIndexQuery(): QueryBuilder
-    {
-        return $this->getAllQuery(
+        $query = $this->getAllQuery(
             withComments: true,
             withLikes: true,
             withAuthor: true,
             withProfile: true
         );
+
+        return new PaginatorDto($page, $pageSize, new Paginator($query));
     }
 
     public function getPostsByAuthor(Ulid|User $author): array
@@ -101,23 +77,7 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function getPostsByAuthorsCount(array|Collection $authors): int
-    {
-        $ids = $this->getAuthorsIds($authors);
-
-        if (empty($ids)) {
-            return 0;
-        }
-
-        return $this->createQueryBuilder('mp')
-            ->select('COUNT(mp.id)')
-            ->where('mp.author IN (:authors)')
-            ->setParameter(':authors', $ids)
-            ->getQuery()
-            ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
-    }
-
-    public function getPostsByAuthors(array|Collection $authors, PaginatorDto $paginatorDto): ?Paginator
+    public function getPostsByAuthors(array|Collection $authors, int $page, int $pageSize): ?PaginatorDto
     {
         $ids = $this->getAuthorsIds($authors);
 
@@ -133,14 +93,14 @@ class MicroPostRepository extends ServiceEntityRepository
             withProfile: true
         )
             ->where('mp.author IN (:authors)')
-            ->setParameter(':authors', $ids)
-            ->setFirstResult($paginatorDto->firstResultIndex)
-            ->setMaxResults($paginatorDto->pageSize);
+            ->setParameter(':authors', $ids);
 
-        return new Paginator($query);
+        $paginator = new Paginator($query);
+
+        return new PaginatorDto($page, $pageSize, $paginator);
     }
 
-    public function getPostsTopLiked(int $likeMoreOrEqual, ?int $limit = null): array
+    public function getPostsTopLiked(int $likeMoreOrEqual, $page, $pageSize): PaginatorDto
     {
         $query = $this->getAllQuery(
             withLikes: true,
@@ -149,22 +109,19 @@ class MicroPostRepository extends ServiceEntityRepository
             ->having('COUNT(likedBy) >= :likeMoreOrEqual')
             ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual);
 
-        if ($limit) {
-            $query->setMaxResults($limit);
-        }
-
         $ids = $query->getQuery()
             ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
 
-        return $this->getAllQuery(
+        $resultQuery = $this->getAllQuery(
             withComments: true,
             withLikes: true,
             withAuthor: true,
             withProfile: true
         )
             ->where('mp.id in (:ids)')
-            ->setParameter(':ids', $ids)
-            ->getQuery()->getResult();
+            ->setParameter(':ids', $ids);
+
+        return new PaginatorDto($page, $pageSize, new Paginator($resultQuery));
     }
 
     public function getPostByUuidWithCommentsLikesAuthorsProfiles(string $uuid): ?MicroPost
@@ -219,7 +176,7 @@ class MicroPostRepository extends ServiceEntityRepository
         return $query->orderBy('mp.id', 'desc');
     }
 
-    private function getAuthorsIds(Collection|array $authors)
+    private function getAuthorsIds(Collection|array $authors): array
     {
         $ids = [];
 

@@ -6,6 +6,23 @@
 
 {% block body %}
     {{ include('@mp/_post_tabs.html.twig') }}
+
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mb-4">
+        {% embed '@shared/_paginator.html.twig' with { paginator, minLikes } only %}
+            {% block first %}{{ path('app_micro_post_list_top_likes', {page: 1}) }}{% endblock %}
+
+            {% block previous %}{{ path('app_micro_post_list_top_likes', {page: (paginator.page-1)}) }}{% endblock %}
+
+            {% block next %}{{ path('app_micro_post_list_top_likes', {page: (paginator.page+1)}) }}{% endblock %}
+
+            {% block last %}{{ path('app_micro_post_list_top_likes', {page: paginator.totalPages}) }}{% endblock %}
+
+            {% block paginatorName %}
+                Posts with more then {{ minLikes }} likes.
+            {% endblock %}
+        {% endembed %}
+    </div>
+
     {% set showAvatarInPostBlock = true %}
-    {{ include('@mp/include/_post_list.html.twig', { posts }) }}
+    {{ include('@mp/include/_post_list.html.twig', { posts: paginator.iterator }) }}
 {% endblock %}

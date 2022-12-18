@@ -1,28 +1,35 @@
 {% if paginator is defined and paginator.totalPages > 1 %}
     {% set class_href_nav = 'underline underline-offset-4 hover:text-indigo-500 dark:hover:text-indigo-300' %}
+    {% set page = paginator.page %}
+    {% set totalPages = paginator.totalPages %}
+
     {% if block('first') %}
-        {% if paginator.page > 2 %}
+        {% if page > 2 %}
             <div>
                 <a class="{{ class_href_nav }}" href="{% block first %}{% endblock %}">first page</a>
             </div>
         {% endif %}
     {% endif %}
-    {% if paginator.page > 1 %}
+
+    {% if page > 1 %}
         <div>
             <a class="text-4xl no-underline{{ ' ' ~ class_href_nav }}" href="{% block previous %}{% endblock %}">&leftarrow;</a>
         </div>
     {% endif %}
+
     <div>
         {% block paginatorName %}{% endblock %}
-        Page {{ paginator.page }} of {{ paginator.totalPages }}
+        Page {{ page }} of {{ totalPages }}
     </div>
-    {% if paginator.page < paginator.totalPages %}
+
+    {% if page < totalPages %}
         <div>
             <a class="text-4xl no-underline{{ ' ' ~ class_href_nav }}" href="{% block next %}{% endblock %}">&rightarrow;</a>
         </div>
     {% endif %}
+
     {% if block('last') %}
-        {% if paginator.page < (paginator.totalPages - 1) %}
+        {% if page < (totalPages - 1) %}
             <div>
                 <a class="{{ class_href_nav }}" href="{% block last %}{% endblock %}">last page</a>
             </div>

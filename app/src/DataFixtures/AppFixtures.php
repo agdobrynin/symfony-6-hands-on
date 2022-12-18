@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Entity\UserProfile;
 use App\Service\SetAvatarImageInterface;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
@@ -78,13 +79,19 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+        $countOfUsers = $manager->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+
         for ($i = 0; $i < 500; $i++) {
             $microPost = (new MicroPost())
                 ->setContent($faker->realTextBetween(5, 140))
                 ->setAuthor($users[array_rand($users)]);
             // set random likes
-            foreach (array_rand($users, 3) as $index => $userIndex) {
-                $microPost->addLikedBy($users[$userIndex]);
+            for ($l = 0, $lt = rand(0, $countOfUsers); $l < $lt; $l++) {
+                $microPost->addLikedBy($users[array_rand($users)]);
             }
 
             $manager->persist($microPost);

@@ -7,7 +7,7 @@
 {% block body %}
     {{ include('@mp/_post_tabs.html.twig') }}
     <div class="grid grid-flow-col auto-cols-max gap-4 items-center mb-4">
-        {% embed '@shared/_paginator.html.twig' with { paginator } %}
+        {% embed '@shared/_paginator.html.twig' with { paginator } only %}
             {% block first %}{{ path('app_micro_post_list', {page: 1}) }}{% endblock %}
 
             {% block previous %}{{ path('app_micro_post_list', {page: (paginator.page-1)}) }}{% endblock %}
@@ -25,7 +25,7 @@
     {{ include('@mp/include/_post_list.html.twig', {posts, paginator, showAvatarInPostBlock: true}) }}
 
     <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
-        {% embed '@shared/_paginator.html.twig'  with { paginator } %}
+        {% embed '@shared/_paginator.html.twig'  with { paginator } only %}
             {% block previous %}{{ path('app_micro_post_list', {page: (paginator.page-1)}) }}{% endblock %}
 
             {% block next %}{{ path('app_micro_post_list', {page: (paginator.page+1)}) }}{% endblock %}
