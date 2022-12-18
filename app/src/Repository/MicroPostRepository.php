@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Dto\PaginatorDto;
 use App\Entity\MicroPost;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\AbstractQuery;
@@ -47,20 +46,6 @@ class MicroPostRepository extends ServiceEntityRepository
         );
 
         return new PaginatorDto($page, $pageSize, new Paginator($query));
-    }
-
-    public function getPostsByAuthor(Ulid|User $author): array
-    {
-        return $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
-            withAuthor: true,
-            withProfile: true
-        )
-            ->where('mp.author = :author')
-            ->setParameter(':author', $author instanceof User ? $author->getId()->toRfc4122() : $author)
-            ->getQuery()
-            ->getResult();
     }
 
     public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,12 +13,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileViewController extends AbstractController
 {
     #[Route('/profile/{id}/view', name: 'app_profile_view')]
-    public function index(string $id, UserRepository $userRepository, MicroPostRepository $microPostRepository): Response
+    public function index(
+        string              $id,
+        UserRepository      $userRepository,
+        MicroPostRepository $microPostRepository,
+        Request             $request
+    ): Response
     {
         if ($user = $userRepository->getUserForUserProfilePage($id)) {
+            $page = (int)$request->get('page', 1);
+            $pageSize = $this->getParameter('blogger_profile.posts_list.page_size');
+            $paginatorDto = $microPostRepository->getPostsByAuthors([$user], $page, $pageSize);
+
             return $this->render('@main/profile_view/index.html.twig', [
                 'user' => $user,
-                'posts' => $microPostRepository->getPostsByAuthor($user)
+                'posts' => $paginatorDto ? $paginatorDto->getIterator() : [],
+                'paginator' => $paginatorDto,
             ]);
         }
 

@@ -12,6 +12,7 @@ parameters:
     micro_post.profile_images_dir: '%kernel.project_dir%/public%micro_post.profile_images_url%'
     micro_post.profile_image.max_size: '250k'
     micro_post.page_size_on_index_page: '%env(int:PAGE_SIZE_ON_INDEX_PAGE)%'
+    blogger_profile.posts_list.page_size: '%env(int:PAGE_SIZE_FOR_POSTS_ON_PROFILE_PAGE)%'
 services:
     # default configuration for services in *this* file
     _defaults:

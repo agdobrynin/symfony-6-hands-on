@@ -10,5 +10,29 @@
 {% block body %}
     {{ include('@main/profile_view/_profile_header.html.twig') }}
     {{ include('@main/profile_view/_profile_tabs.html.twig') }}
-    {{ include('@main/micro-post/include/_post_list.html.twig', {posts}) }}
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mb-4">
+        {% embed '@shared/_paginator.html.twig' with { paginator, 'id': user.id.toRfc4122 } only %}
+            {% block first %}{{ path('app_profile_view', {id, page: 1}) }}{% endblock %}
+
+            {% block previous %}{{ path('app_profile_view', {id, page: (paginator.page-1)}) }}{% endblock %}
+
+            {% block next %}{{ path('app_profile_view', {id, page: (paginator.page+1)}) }}{% endblock %}
+
+            {% block last %}{{ path('app_profile_view', {id, page: paginator.totalPages}) }}{% endblock %}
+
+            {% block paginatorName %}
+                All post from blogger.
+            {% endblock %}
+        {% endembed %}
+    </div>
+
+    {{ include('@main/micro-post/include/_post_list.html.twig', { posts }) }}
+
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
+        {% embed '@shared/_paginator.html.twig'  with { paginator, 'id': user.id.toRfc4122 } only %}
+            {% block previous %}{{ path('app_profile_view', {id, page: (paginator.page-1)}) }}{% endblock %}
+
+            {% block next %}{{ path('app_profile_view', {id, page: (paginator.page+1)}) }}{% endblock %}
+        {% endembed %}
+    </div>
 {% endblock %}
