@@ -87,7 +87,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 500; $i++) {
             $microPost = (new MicroPost())
-                ->setContent($faker->realTextBetween(5, 140))
+                ->setContent($i . ') ' . $faker->realTextBetween(5, 140))
                 ->setAuthor($users[array_rand($users)]);
             // set random likes
             for ($l = 0, $lt = rand(0, $countOfUsers); $l < $lt; $l++) {
