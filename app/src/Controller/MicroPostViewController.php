@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Uid\Ulid;
 
 class MicroPostViewController extends AbstractController
@@ -22,7 +23,16 @@ class MicroPostViewController extends AbstractController
             throw new NotFoundHttpException('Post not found');
         }
 
-        $this->denyAccessUnlessGranted(MicroPost::VOTER_EXTRA_PRIVACY, $post, 'This post for followers only');
+        try {
+            $this->denyAccessUnlessGranted(MicroPost::VOTER_EXTRA_PRIVACY, $post, 'This post for followers only');
+        } catch (AccessDeniedException $deniedException) {
+            return $this->render('@mp/extra_privacy_denied.html.twig', [
+                'denyType' => 'View post',
+                'deniedMessage' => $deniedException->getMessage(),
+                'user' => $post->getAuthor(),
+            ])
+                ->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
 
         return $this->render('@mp/view.html.twig', ['post' => $post]);
     }

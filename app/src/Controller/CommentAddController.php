@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CommentAddController extends AbstractController
@@ -24,7 +25,16 @@ class CommentAddController extends AbstractController
     public function index(string $id, Request $request, CommentRepository $commentRepository, MicroPostRepository $microPostRepository): RedirectResponse|Response
     {
         if ($post = $microPostRepository->getPostByUuidWithCommentsLikesAuthorsProfiles($id)) {
-            $this->denyAccessUnlessGranted(MicroPost::VOTER_EXTRA_PRIVACY, $post, 'This post for followers only');
+            try {
+                $this->denyAccessUnlessGranted(MicroPost::VOTER_EXTRA_PRIVACY, $post, 'This post for followers only');
+            } catch (AccessDeniedException $deniedException) {
+                return $this->render('@mp/extra_privacy_denied.html.twig', [
+                    'denyType' => 'Add comment',
+                    'deniedMessage' => $deniedException->getMessage(),
+                    'user' => $post->getAuthor(),
+                ])
+                    ->setStatusCode(Response::HTTP_FORBIDDEN);
+            }
 
             $form = $this->createForm(CommentType::class, new Comment());
             $form->handleRequest($request);

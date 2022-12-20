@@ -8,7 +8,9 @@ use App\Service\FlashTypeServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use function Symfony\Component\String\u;
 
@@ -22,9 +24,19 @@ class LikeController extends AbstractController
     }
 
     #[Route('/like/{id}', name: 'app_like')]
-    #[IsGranted(MicroPost::VOTER_EXTRA_PRIVACY, 'post', 'This post can like followers only')]
-    public function like(MicroPost $post): RedirectResponse
+    public function like(MicroPost $post): RedirectResponse|Response
     {
+        try {
+            $this->denyAccessUnlessGranted(MicroPost::VOTER_EXTRA_PRIVACY, $post, 'This post can like followers only');
+        } catch (AccessDeniedException $deniedException) {
+            return $this->render('@mp/extra_privacy_denied.html.twig', [
+                'denyType' => 'Like post',
+                'deniedMessage' => $deniedException->getMessage(),
+                'user' => $post->getAuthor(),
+            ])
+                ->setStatusCode(Response::HTTP_FORBIDDEN);
+        }
+
         $post->addLikedBy($this->getUser());
         $this->postRepository->add($post, true);
         $flashMessage = sprintf('Post "%s..." is like!', $this->getPartOfContent($post));

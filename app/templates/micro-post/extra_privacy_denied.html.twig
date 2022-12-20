@@ -1,0 +1,13 @@
+{% extends '@main/base.html.twig' %}
+
+{% block bradCrumbs %}
+    <span class="text-2xl">&rarr;</span> Access denied
+    {% if denyType is defined %}
+        <span class="text-2xl">&rarr;</span> {{ denyType }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl mb-4">{{ deniedMessage }}</h1>
+    {{ include('@shared/_follow.html.twig', {users: [user]}) }}
+{% endblock %}
