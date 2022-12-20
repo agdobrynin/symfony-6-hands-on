@@ -17,12 +17,12 @@
             {% block last %}{{ path('app_micro_post_list', {page: paginator.totalPages}) }}{% endblock %}
 
             {% block paginatorName %}
-                Posts from all bloggers.
+                <div>Posts from all bloggers.</div>
             {% endblock %}
         {% endembed %}
     </div>
 
-    {{ include('@mp/include/_post_list.html.twig', {posts, paginator, showAvatarInPostBlock: true}) }}
+    {{ include('@mp/include/_post_list.html.twig', {posts: paginator.iterator, showAvatarInPostBlock: true}) }}
 
     <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
         {% embed '@shared/_paginator.html.twig'  with { paginator } only %}

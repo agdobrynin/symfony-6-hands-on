@@ -129,9 +129,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         if ($withPosts) {
-            $query->leftJoin('u.microPosts', 'microPosts')
+            $query->innerJoin('u.microPosts', 'microPosts')
                 ->addSelect('microPosts')
-                ->leftJoin('microPosts.author', 'microPostsAuthor')
+                ->innerJoin('microPosts.author', 'microPostsAuthor')
                 ->addSelect('microPostsAuthor');
         }
 

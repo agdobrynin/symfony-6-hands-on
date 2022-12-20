@@ -3,6 +3,8 @@
     {% set page = paginator.page %}
     {% set totalPages = paginator.totalPages %}
 
+    {% block paginatorName %}{% endblock %}
+
     {% if block('first') %}
         {% if page > 2 %}
             <div>
@@ -18,7 +20,6 @@
     {% endif %}
 
     <div>
-        {% block paginatorName %}{% endblock %}
         Page {{ page }} of {{ totalPages }}
     </div>
 

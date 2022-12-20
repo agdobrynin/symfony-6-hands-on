@@ -26,7 +26,7 @@
         {% endembed %}
     </div>
 
-    {{ include('@main/micro-post/include/_post_list.html.twig', { posts }) }}
+    {{ include('@main/micro-post/include/_post_list.html.twig', { posts: paginator.iterator }) }}
 
     <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
         {% embed '@shared/_paginator.html.twig'  with { paginator, 'id': user.id.toRfc4122 } only %}

@@ -2,11 +2,10 @@
 
 namespace App\Repository;
 
-use App\Dto\PaginatorDto;
+use App\Dto\PaginatorItems;
 use App\Entity\MicroPost;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,7 +35,7 @@ class MicroPostRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPostsForIndex(int $page, int $pageSize): PaginatorDto
+    public function getPostsForIndex(int $page, int $pageSize): PaginatorItems
     {
         $query = $this->getAllQuery(
             withComments: true,
@@ -45,7 +44,9 @@ class MicroPostRepository extends ServiceEntityRepository
             withProfile: true
         );
 
-        return new PaginatorDto($page, $pageSize, new Paginator($query));
+        $ormPaginator = new Paginator($query);
+
+        return new PaginatorItems($page, $pageSize, $ormPaginator->count(), $ormPaginator->getIterator());
     }
 
     public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
@@ -62,14 +63,13 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function getPostsByAuthors(array|Collection $authors, int $page, int $pageSize): ?PaginatorDto
+    public function getPostsByAuthors(array|Collection $authors, int $page, int $pageSize): ?PaginatorItems
     {
         $ids = $this->getAuthorsIds($authors);
 
         if (empty($ids)) {
             return null;
         }
-
 
         $query = $this->getAllQuery(
             withComments: true,
@@ -80,33 +80,41 @@ class MicroPostRepository extends ServiceEntityRepository
             ->where('mp.author IN (:authors)')
             ->setParameter(':authors', $ids);
 
-        $paginator = new Paginator($query);
+        $ormPaginator = new Paginator($query);
 
-        return new PaginatorDto($page, $pageSize, $paginator);
+        return new PaginatorItems($page, $pageSize, $ormPaginator->count(), $ormPaginator->getIterator());
     }
 
-    public function getPostsTopLiked(int $likeMoreOrEqual, $page, $pageSize): PaginatorDto
+    public function getPostsTopLiked(int $likeMoreOrEqual, $page, $pageSize): PaginatorItems
     {
-        $query = $this->getAllQuery(
-            withLikes: true,
-        )->select('mp.id')
-            ->groupBy('mp.id')
-            ->having('COUNT(likedBy) >= :likeMoreOrEqual')
-            ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual);
+        $countQuery = $this->createQueryBuilder('mp')
+            ->innerJoin('mp.likedBy', 'usrLike')
+            ->select('mp.id, count(usrLike) as HIDDEN likes')
+            ->having('count(usrLike) >= :likeMoreOrEqual')
+            ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual)
+            ->groupBy('mp.id');
 
-        $ids = $query->getQuery()
-            ->getResult(AbstractQuery::HYDRATE_SCALAR_COLUMN);
+        $totalItems = \count($countQuery->getQuery()->getSingleColumnResult());
 
-        $resultQuery = $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
-            withAuthor: true,
-            withProfile: true
-        )
-            ->where('mp.id in (:ids)')
-            ->setParameter(':ids', $ids);
+        $resultQuery = $this->createQueryBuilder('mp')
+            ->innerJoin('mp.likedBy', 'usrLike')
+            ->select('count(usrLike) as HIDDEN likes', 'mp')
+            ->innerJoin('mp.author', 'postAuthor')
+            ->addSelect('postAuthor')
+            ->leftJoin('postAuthor.userProfile', 'postAuthorUserProfile')
+            ->addSelect('postAuthorUserProfile')
+            ->leftJoin('mp.comments', 'postComment')
+            ->addSelect('postComment')
+            ->orderBy('likes', 'DESC')
+            ->groupBy('mp.id, postAuthor.id, postAuthorUserProfile.id, postComment.id')
+            ->having('count(usrLike) >= :likeMoreOrEqual')
+            ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual)
+            ->groupBy('mp.id, postAuthor.id, postAuthorUserProfile.id, postComment.id')
+            //
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
 
-        return new PaginatorDto($page, $pageSize, new Paginator($resultQuery));
+        return new PaginatorItems($page, $pageSize, $totalItems, (new Paginator($resultQuery))->getIterator());
     }
 
     public function getPostByUuidWithCommentsLikesAuthorsProfiles(string $uuid): ?MicroPost
@@ -137,19 +145,19 @@ class MicroPostRepository extends ServiceEntityRepository
         }
 
         if ($withCommentsAuthor) {
-            $query->leftJoin('comments.author', 'commentsAuthor')
+            $query->innerJoin('comments.author', 'commentsAuthor')
                 ->addSelect('commentsAuthor');
             $query->leftJoin('commentsAuthor.userProfile', 'commentsAuthorUserProfile')
                 ->addSelect('commentsAuthorUserProfile');
         }
 
         if ($withLikes) {
-            $query->leftJoin('mp.likedBy', 'likedBy')
-                ->addSelect('likedBy');
+            $query->leftJoin('mp.likedBy', 'postLikedBy')
+                ->addSelect('postLikedBy');
         }
 
         if ($withAuthor || $withProfile) {
-            $query->leftJoin('mp.author', 'author')
+            $query->innerJoin('mp.author', 'author')
                 ->addSelect('author');
         }
 
