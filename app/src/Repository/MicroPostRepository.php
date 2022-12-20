@@ -55,6 +55,7 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
     {
         return $this->getAllQuery(
+            withComments: true,
             withCommentsAuthor: true,
             withLikes: true,
             withAuthor: true,
@@ -151,7 +152,7 @@ class MicroPostRepository extends ServiceEntityRepository
         }
 
         if ($withCommentsAuthor) {
-            $query->innerJoin('comments.author', 'commentsAuthor')
+            $query->leftJoin('comments.author', 'commentsAuthor')
                 ->addSelect('commentsAuthor');
             $query->leftJoin('commentsAuthor.userProfile', 'commentsAuthorUserProfile')
                 ->addSelect('commentsAuthorUserProfile');
