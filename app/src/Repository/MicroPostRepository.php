@@ -42,7 +42,10 @@ class MicroPostRepository extends ServiceEntityRepository
             withLikes: true,
             withAuthor: true,
             withProfile: true
-        );
+        )
+            //
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
 
         $ormPaginator = new Paginator($query);
 
@@ -78,7 +81,10 @@ class MicroPostRepository extends ServiceEntityRepository
             withProfile: true
         )
             ->where('mp.author IN (:authors)')
-            ->setParameter(':authors', $ids);
+            ->setParameter(':authors', $ids)
+            //
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);;
 
         $ormPaginator = new Paginator($query);
 
