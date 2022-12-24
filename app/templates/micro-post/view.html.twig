@@ -21,8 +21,25 @@
         </div>
     </div>
     <div>{{ include('@mp/include/_post.html.twig', {post}) }}</div>
+
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-start">
+        {% set postUuid = post.id.toRfc4122 %}
+
+        {% embed '@shared/_paginator.html.twig'  with { paginator: paginatorComments, postUuid } only %}
+            {% block paginatorName %} Comments (total items {{ paginator.totalItems }}) {% endblock %}
+
+            {% block first %}{{ path('app_micro_post_view', {page: 1, id: postUuid}) }}{% endblock %}
+
+            {% block previous %}{{ path('app_micro_post_view', {page: (paginator.page-1), id: postUuid}) }}{% endblock %}
+
+            {% block next %}{{ path('app_micro_post_view', {page: (paginator.page+1), id: postUuid}) }}{% endblock %}
+
+            {% block last %}{{ path('app_micro_post_view', {page: paginator.totalPages, id: postUuid}) }}{% endblock %}
+        {% endembed %}
+    </div>
+
     <div class="mt-4">
-        {% for comment in post.comments %}
+        {% for comment in paginatorComments.iterator %}
             <div>
                 <div class="flex items-center">
                     <div class="mr-2">
@@ -45,5 +62,19 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+
+    <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">
+        {% set postUuid = post.id.toRfc4122 %}
+
+        {% embed '@shared/_paginator.html.twig'  with { paginator: paginatorComments, postUuid } only %}
+            {% block first %}{{ path('app_micro_post_view', {page: 1, id: postUuid}) }}{% endblock %}
+
+            {% block previous %}{{ path('app_micro_post_view', {page: (paginator.page-1), id: postUuid}) }}{% endblock %}
+
+            {% block next %}{{ path('app_micro_post_view', {page: (paginator.page+1), id: postUuid}) }}{% endblock %}
+
+            {% block last %}{{ path('app_micro_post_view', {page: paginator.totalPages, id: postUuid}) }}{% endblock %}
+        {% endembed %}
     </div>
 {% endblock %}

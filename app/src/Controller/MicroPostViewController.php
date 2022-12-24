@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Dto\PaginatorItems;
 use App\Entity\MicroPost;
 use App\Repository\MicroPostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,11 +17,21 @@ use Symfony\Component\Uid\Ulid;
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 class MicroPostViewController extends AbstractController
 {
-    #[Route('/micro-post/{id}/view', name: 'app_micro_post_view', methods: 'get')]
-    public function index(string $id, MicroPostRepository $microPostRepository): Response
+    private readonly int $page;
+
+    public function __construct(
+        RequestStack                         $requestStack,
+        private readonly int                 $pageSize,
+        private readonly MicroPostRepository $microPostRepository
+    )
     {
-        $postUlid = Ulid::fromRfc4122($id);
-        $post = $microPostRepository->getPostWithOtherData($postUlid);
+        $this->page = (int)$requestStack->getCurrentRequest()->get('page', 1);
+    }
+
+    #[Route('/micro-post/{id}/view', name: 'app_micro_post_view', methods: 'get')]
+    public function index(string $id): Response
+    {
+        $post = $this->microPostRepository->getPostViewWithComments(Ulid::fromRfc4122($id));
 
         if (null === $post) {
             throw new NotFoundHttpException('Post not found');
@@ -36,6 +48,13 @@ class MicroPostViewController extends AbstractController
                 ->setStatusCode(Response::HTTP_FORBIDDEN);
         }
 
-        return $this->render('@mp/view.html.twig', ['post' => $post]);
+        $slicedComments = $post->getComments()->slice(($this->page - 1) * $this->pageSize, $this->pageSize);
+        $iterator = new \ArrayIterator($slicedComments);
+        $paginatorComments = new PaginatorItems($this->page, $this->pageSize, $post->getComments()->count(), $iterator);
+
+        return $this->render('@mp/view.html.twig', [
+            'post' => $post,
+            'paginatorComments' => $paginatorComments
+        ]);
     }
 }

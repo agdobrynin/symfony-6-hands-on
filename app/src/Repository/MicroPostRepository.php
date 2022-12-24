@@ -53,6 +53,20 @@ class MicroPostRepository extends ServiceEntityRepository
         return new PaginatorItems($page, $pageSize, $ormPaginator->count(), $ormPaginator->getIterator());
     }
 
+    public function getPostViewWithComments(Ulid|MicroPost $post): ?MicroPost
+    {
+        return $this->getAllQuery(
+            withComments: true,
+            withCommentsAuthor: true,
+            withAuthor: true,
+            withProfile: true,
+        )
+            ->where('mp.id = :post')
+            ->setParameter(':post', $post instanceof MicroPost ? $post->getId()->toRfc4122() : $post->toRfc4122())
+            ->getQuery()
+            ->getSingleResult();
+    }
+
     public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
     {
         return $this->getAllQuery(
