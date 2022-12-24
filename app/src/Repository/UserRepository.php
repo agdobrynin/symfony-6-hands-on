@@ -63,7 +63,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->getUserQuery(
             withProfile: true,
-            withPosts: true,
             withFollowers: true,
             withFollowing: true
         )

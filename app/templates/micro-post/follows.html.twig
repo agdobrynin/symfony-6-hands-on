@@ -25,7 +25,7 @@
     {% endif %}
 
     {% set showAvatarInPostBlock = true %}
-    {{ include('@mp/include/_post_list.html.twig', { posts: paginator.iterator ?? [] }) }}
+    {{ include('@mp/include/_post_list.html.twig', { posts: paginator.iterator }) }}
 
     {% if paginator %}
         <div class="grid grid-flow-col auto-cols-max gap-4 items-center mt-4 place-content-end">

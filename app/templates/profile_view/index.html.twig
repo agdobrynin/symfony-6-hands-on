@@ -9,7 +9,7 @@
 
 {% block body %}
     {{ include('@main/profile_view/_profile_header.html.twig') }}
-    {{ include('@main/profile_view/_profile_tabs.html.twig') }}
+    {{ include('@main/profile_view/_profile_tabs.html.twig', {totalPosts: paginator.totalItems}) }}
     <div class="grid grid-flow-col auto-cols-max gap-4 items-center mb-4">
         {% embed '@shared/_paginator.html.twig' with { paginator, 'id': user.id.toRfc4122 } only %}
             {% block first %}{{ path('app_profile_view', {id, page: 1}) }}{% endblock %}

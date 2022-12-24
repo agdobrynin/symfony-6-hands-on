@@ -46,6 +46,8 @@ class MicroPost
     #[ORM\Column]
     private bool $extraPrivacy = false;
 
+    private ?int $totalLikes = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -156,5 +158,15 @@ class MicroPost
         $this->extraPrivacy = $extraPrivacy;
 
         return $this;
+    }
+
+    public function getTotalLikes(): ?int
+    {
+        return $this->totalLikes;
+    }
+
+    public function setTotalLikes(?int $total): void
+    {
+        $this->totalLikes = $total;
     }
 }

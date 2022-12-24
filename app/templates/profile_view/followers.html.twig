@@ -9,6 +9,6 @@
 
 {% block body %}
     {{ include('@main/profile_view/_profile_header.html.twig') }}
-    {{ include('@main/profile_view/_profile_tabs.html.twig') }}
+    {{ include('@main/profile_view/_profile_tabs.html.twig', {totalPosts: user.microPosts.count}) }}
     {{ include('@main/shared/_follow.html.twig', {users: user.followers}) }}
 {% endblock %}

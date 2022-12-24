@@ -9,8 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\Ulid;
 
+#[IsGranted('IS_AUTHENTICATED_FULLY')]
 class MicroPostViewController extends AbstractController
 {
     #[Route('/micro-post/{id}/view', name: 'app_micro_post_view', methods: 'get')]

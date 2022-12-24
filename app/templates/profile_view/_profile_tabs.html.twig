@@ -2,7 +2,7 @@
     {% block tabs %}
         {% embed '@main/shared/_tab.html.twig' with {route: 'app_profile_view'} %}
             {% block content %}
-                Posts <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ user.microPosts.count }}</span>
+                Posts <span class="px-2 rounded-md bg-gray-200 dark:bg-gray-700">{{ totalPosts }}</span>
             {% endblock %}
             {% block path %} {{ url('app_profile_view', {id: user.id.toRfc4122}) }} {% endblock %}
         {% endembed %}

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\MicroPostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,6 +34,7 @@ class MicroPostListController extends AbstractController
     {
         $minLikes = $this->getParameter('micro_post.top_likes.min');
         $paginatorItems = $repository->getPostsTopLiked($minLikes, $this->page, $this->pageSize);
+        $repository->fillLikeCount($paginatorItems->iterator);
 
         return $this->render('@mp/top_likes.html.twig', [
             'paginator' => $paginatorItems,
@@ -46,10 +46,7 @@ class MicroPostListController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function follows(MicroPostRepository $repository): Response
     {
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-        $followAuthors = $currentUser->getFollowing();
-        $paginator = $repository->getPostsByAuthors($followAuthors, $this->page, $this->pageSize);
+        $paginator = $repository->getFollowPosts($this->page, $this->pageSize, $this->getUser());
 
         return $this->render('@mp/follows.html.twig', [
             'paginator' => $paginator

@@ -23,7 +23,7 @@ class ProfileViewController extends AbstractController
         if ($user = $userRepository->getUserForUserProfilePage($id)) {
             $page = (int)$request->get('page', 1);
             $pageSize = $this->getParameter('blogger_profile.posts_list.page_size');
-            $paginator = $microPostRepository->getPostsByAuthors([$user], $page, $pageSize);
+            $paginator = $microPostRepository->getPostsByUser($page, $pageSize, $user);
 
             return $this->render('@main/profile_view/index.html.twig', [
                 'user' => $user,

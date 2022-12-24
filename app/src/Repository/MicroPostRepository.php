@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Dto\PaginatorItems;
 use App\Entity\MicroPost;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\QueryBuilder;
@@ -67,29 +68,42 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function getPostsByAuthors(array|Collection $authors, int $page, int $pageSize): ?PaginatorItems
+    public function getPostsByUser(int $page, $pageSize, User $user): PaginatorItems
     {
-        $ids = $this->getAuthorsIds($authors);
+        $query = $this->getAllQuery(
+            withComments: true,
+            withLikes: true,
+            withProfile: true
+        )
+            ->where('postAuthor = :user')
+            ->setParameter(':user', $user->getId()->toRfc4122())
+            //
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
 
-        if (empty($ids)) {
-            return null;
-        }
+        $paginator = new Paginator($query);
 
+        return new PaginatorItems($page, $pageSize, $paginator->count(), $paginator->getIterator());
+    }
+
+    public function getFollowPosts(int $page, int $pageSize, User $user): PaginatorItems
+    {
         $query = $this->getAllQuery(
             withComments: true,
             withLikes: true,
             withAuthor: true,
             withProfile: true
         )
-            ->where('mp.author IN (:authors)')
-            ->setParameter(':authors', $ids)
+            ->leftJoin('postAuthor.followers', 'authorFollowers')
+            ->where('authorFollowers IN (:user)')
+            ->setParameter(':user', $user->getId()->toRfc4122())
             //
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize);;
 
-        $ormPaginator = new Paginator($query);
+        $paginator = new Paginator($query);
 
-        return new PaginatorItems($page, $pageSize, $ormPaginator->count(), $ormPaginator->getIterator());
+        return new PaginatorItems($page, $pageSize, $paginator->count(), $paginator->getIterator());
     }
 
     public function getPostsTopLiked(int $likeMoreOrEqual, $page, $pageSize): PaginatorItems
@@ -113,6 +127,7 @@ class MicroPostRepository extends ServiceEntityRepository
             ->leftJoin('mp.comments', 'postComment')
             ->addSelect('postComment')
             ->orderBy('likes', 'DESC')
+            ->addOrderBy('mp.id', 'DESC')
             ->groupBy('mp.id, postAuthor.id, postAuthorUserProfile.id, postComment.id')
             ->having('count(usrLike) >= :likeMoreOrEqual')
             ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual)
@@ -122,6 +137,26 @@ class MicroPostRepository extends ServiceEntityRepository
             ->setMaxResults($pageSize);
 
         return new PaginatorItems($page, $pageSize, $totalItems, (new Paginator($resultQuery))->getIterator());
+    }
+
+    public function fillLikeCount(\ArrayIterator $posts): void
+    {
+        $query = $this->createQueryBuilder('mp')
+            ->innerJoin('mp.likedBy', 'usrLike')
+            ->select('count(usrLike) as likes')
+            ->addSelect('mp.id')
+            ->where('mp IN (:posts)')
+            ->setParameter(':posts', $this->getRfc4122Ids($posts))
+            ->groupBy('mp.id');
+
+        $result = $query->getQuery()->getResult();
+        $postIds = array_column($result, 'id');
+        $postTotalLike = array_column($result, 'likes');
+        $mapPostIdTotalLike = array_combine($postIds, $postTotalLike);
+
+        foreach ($posts as $post) {
+            $post->setTotalLikes($mapPostIdTotalLike[(string)$post->getId()] ?? null);
+        }
     }
 
     public function getPostByUuidWithCommentsLikesAuthorsProfiles(string $uuid): ?MicroPost
@@ -164,24 +199,24 @@ class MicroPostRepository extends ServiceEntityRepository
         }
 
         if ($withAuthor || $withProfile) {
-            $query->innerJoin('mp.author', 'author')
-                ->addSelect('author');
+            $query->innerJoin('mp.author', 'postAuthor')
+                ->addSelect('postAuthor');
         }
 
         if ($withProfile) {
-            $query->leftJoin('author.userProfile', 'userProfile')
+            $query->leftJoin('postAuthor.userProfile', 'userProfile')
                 ->addSelect('userProfile');
         }
 
         return $query->orderBy('mp.id', 'desc');
     }
 
-    private function getAuthorsIds(Collection|array $authors): array
+    private function getRfc4122Ids(Collection|\ArrayIterator|array $subjects): array
     {
         $ids = [];
 
-        foreach ($authors as $author) {
-            $ids[] = $author->getId()->toRfc4122();
+        foreach ($subjects as $subject) {
+            $ids[] = $subject->getId()->toRfc4122();
         }
 
         return $ids;
