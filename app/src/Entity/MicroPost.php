@@ -48,6 +48,8 @@ class MicroPost
 
     private ?int $totalLikes = null;
 
+    private ?int $totalComments = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -168,5 +170,15 @@ class MicroPost
     public function setTotalLikes(?int $total): void
     {
         $this->totalLikes = $total;
+    }
+
+    public function getTotalComments(): ?int
+    {
+        return $this->totalComments;
+    }
+
+    public function setTotalComments(?int $total): void
+    {
+        $this->totalComments = $total;
     }
 }

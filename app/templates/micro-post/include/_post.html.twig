@@ -34,11 +34,13 @@
                    href="{{ url('app_micro_post_edit', {id: post.id.toRfc4122}) }}">edit</a>
                 <span class="flex-none w-2"> </span>
             {% endif %}
-            {% if post.comments.count and app.current_Route != 'app_micro_post_view' %}
+            {% if (post.totalComments ?? post.comments.count) and app.current_Route != 'app_micro_post_view' %}
                 <a class="flex-auto text-sm border border-slate-800 rounded bg-slate-200 p-2 text-center dark:bg-gray-700"
                    href="{{ url('app_micro_post_view', {id: post.id.toRfc4122}) }}">
                     read comments
-                    <span class="flex-auto text-sm px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">{{ post.comments.count }}</span>
+                    <span class="flex-auto text-sm px-2 rounded-md border border-slate-400 bg-gray-200 dark:bg-gray-500">
+                        {{ post.totalComments ?? post.comments.count }}
+                    </span>
                 </a>
                 <span class="flex-none w-2"> </span>
             {% endif %}

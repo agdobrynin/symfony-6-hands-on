@@ -90,8 +90,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->getUserQuery(
             withProfile: true,
-            withPosts: true,
-            withFollowers: true,
             withFollowing: true
         )
             ->where('u.id = :user_id')

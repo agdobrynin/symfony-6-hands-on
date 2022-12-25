@@ -39,8 +39,6 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getPostsForIndex(int $page, int $pageSize): PaginatorItems
     {
         $query = $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
             withAuthor: true,
             withProfile: true
         )
@@ -85,8 +83,6 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getPostsByUser(int $page, $pageSize, User $user): PaginatorItems
     {
         $query = $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
             withProfile: true
         )
             ->where('postAuthor = :user')
@@ -103,8 +99,6 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getFollowPosts(int $page, int $pageSize, User $user): PaginatorItems
     {
         $query = $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
             withAuthor: true,
             withProfile: true
         )
@@ -138,14 +132,13 @@ class MicroPostRepository extends ServiceEntityRepository
             ->addSelect('postAuthor')
             ->leftJoin('postAuthor.userProfile', 'postAuthorUserProfile')
             ->addSelect('postAuthorUserProfile')
-            ->leftJoin('mp.comments', 'postComment')
-            ->addSelect('postComment')
             ->orderBy('likes', 'DESC')
             ->addOrderBy('mp.id', 'DESC')
-            ->groupBy('mp.id, postAuthor.id, postAuthorUserProfile.id, postComment.id')
             ->having('count(usrLike) >= :likeMoreOrEqual')
             ->setParameter(':likeMoreOrEqual', $likeMoreOrEqual)
-            ->groupBy('mp.id, postAuthor.id, postAuthorUserProfile.id, postComment.id')
+            ->groupBy('mp.id')
+            ->addGroupBy('postAuthor.id')
+            ->addGroupBy('postAuthorUserProfile.id')
             //
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize);
@@ -170,6 +163,26 @@ class MicroPostRepository extends ServiceEntityRepository
 
         foreach ($posts as $post) {
             $post->setTotalLikes($mapPostIdTotalLike[(string)$post->getId()] ?? null);
+        }
+    }
+
+    public function fillCommentsCount(\ArrayIterator $posts): void
+    {
+        $query = $this->createQueryBuilder('mp')
+            ->innerJoin('mp.comments', 'comments')
+            ->select('count(comments) as commentCount')
+            ->addSelect('mp.id')
+            ->where('mp IN (:posts)')
+            ->setParameter(':posts', $this->getRfc4122Ids($posts))
+            ->groupBy('mp.id');
+
+        $result = $query->getQuery()->getResult();
+        $postIds = array_column($result, 'id');
+        $postTotalComments = array_column($result, 'commentCount');
+        $mapPostIdTotalComments = array_combine($postIds, $postTotalComments);
+        /** @var MicroPost $post */
+        foreach ($posts as $post) {
+            $post->setTotalComments($mapPostIdTotalComments[(string)$post->getId()] ?? null);
         }
     }
 

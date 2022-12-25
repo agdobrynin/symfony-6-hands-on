@@ -24,6 +24,8 @@ class ProfileViewController extends AbstractController
             $page = (int)$request->get('page', 1);
             $pageSize = $this->getParameter('blogger_profile.posts_list.page_size');
             $paginator = $microPostRepository->getPostsByUser($page, $pageSize, $user);
+            $microPostRepository->fillLikeCount($paginator->iterator);
+            $microPostRepository->fillCommentsCount($paginator->iterator);
 
             return $this->render('@main/profile_view/index.html.twig', [
                 'user' => $user,
