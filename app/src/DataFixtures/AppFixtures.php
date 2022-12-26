@@ -103,7 +103,7 @@ class AppFixtures extends Fixture
         $posts = $manager->getRepository(MicroPost::class)->findAll();
 
         foreach ($posts as $post) {
-            for ($c = 0; $c < rand(0, 50); $c++) {
+            for ($c = 0, $ct = rand(0, 50); $c < $ct; $c++) {
                 $comment = (new Comment())
                     ->setAuthor($users[array_rand($users)])
                     ->setContent($faker->realTextBetween(150, 300))
