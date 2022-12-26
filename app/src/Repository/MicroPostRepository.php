@@ -189,9 +189,6 @@ class MicroPostRepository extends ServiceEntityRepository
     public function getPostByUuidWithCommentsLikesAuthorsProfiles(string $uuid): ?MicroPost
     {
         return $this->getAllQuery(
-            withComments: true,
-            withLikes: true,
-            withAuthor: true,
             withProfile: true
         )->where('mp.id = :uuid')
             ->setParameter(':uuid', $uuid)
