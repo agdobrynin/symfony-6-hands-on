@@ -24,12 +24,13 @@ class FollowerController extends AbstractController
     public function follow(User $followToUser): Response
     {
         $user = $this->getUser();
+
         if ($user instanceof User && $user->getId() !== $followToUser->getId()) {
             $followToUser->follow($user);
             $this->em->flush();
         }
 
-        return $this->redirect($this->requestStack->getCurrentRequest()->headers->get('referer'));
+        return $this->redirectToRoute('app_profile_view', ['id' => $followToUser->getId()->toRfc4122()]);
     }
 
     #[Route('/unfollow/{id}', name: 'app_unfollow')]
