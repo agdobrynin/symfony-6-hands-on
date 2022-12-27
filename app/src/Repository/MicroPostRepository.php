@@ -149,7 +149,7 @@ class MicroPostRepository extends ServiceEntityRepository
     public function fillLikeCount(\ArrayIterator $posts): void
     {
         $query = $this->createQueryBuilder('mp')
-            ->innerJoin('mp.likedBy', 'usrLike')
+            ->leftJoin('mp.likedBy', 'usrLike')
             ->select('count(usrLike) as likes')
             ->addSelect('mp.id')
             ->where('mp IN (:posts)')
@@ -169,7 +169,7 @@ class MicroPostRepository extends ServiceEntityRepository
     public function fillCommentsCount(\ArrayIterator $posts): void
     {
         $query = $this->createQueryBuilder('mp')
-            ->innerJoin('mp.comments', 'comments')
+            ->leftJoin('mp.comments', 'comments')
             ->select('count(comments) as commentCount')
             ->addSelect('mp.id')
             ->where('mp IN (:posts)')
