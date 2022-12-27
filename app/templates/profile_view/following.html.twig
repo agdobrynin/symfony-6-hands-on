@@ -1,6 +1,6 @@
 {% extends '@main/base.html.twig' %}
 
-{% block title %}{{ user.userProfile.name|default(user.email|mask_email) }} follow{% endblock %}
+{% block title %}{{ user.userProfile.name|default(user.email|mask_email) }} follow | {{ parent() }}{% endblock %}
 
 {% block bradCrumbs %}
     <span class="text-2xl">&rarr;</span> User profile

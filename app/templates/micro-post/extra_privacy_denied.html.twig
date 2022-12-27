@@ -1,5 +1,7 @@
 {% extends '@main/base.html.twig' %}
 
+{% block title %}This page for followers only | {{ parent() }}{% endblock %}
+
 {% block bradCrumbs %}
     <span class="text-2xl">&rarr;</span> Access denied
     {% if denyType is defined %}

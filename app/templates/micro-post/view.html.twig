@@ -1,6 +1,6 @@
 {% extends '@main/base.html.twig' %}
 
-{% block title %}View post : {{ post.content|slice(0, 24) }}...{% endblock %}
+{% block title %}View post : {{ post.content|slice(0, 24) }}... | {{ parent() }}{% endblock %}
 
 {% block bradCrumbs %}<span class="text-2xl">&rarr;</span> View post {% endblock %}
 
