@@ -39,9 +39,9 @@ class AppFixtures extends Fixture
             isVerified: true);
 
         $fixtureUsers[] = new UserFixtureDto('editor@email.com', ['ROLE_EDITOR'], 'Editor ✍', true);
-        $fixtureUsers[] = new UserFixtureDto('monkey@email.com', [], 'Monkey man 🐵', true);
-        $fixtureUsers[] = new UserFixtureDto('user@email.com', [], 'User 😑', true);
-        $fixtureUsers[] = new UserFixtureDto('view@email.com', [], 'Viewer 🖐', true);
+        $fixtureUsers[] = new UserFixtureDto('monkey@email.com', ['ROLE_USER'], 'Monkey man 🐵', true);
+        $fixtureUsers[] = new UserFixtureDto('user@email.com', ['ROLE_USER'], 'User 😑', false);
+        $fixtureUsers[] = new UserFixtureDto('view@email.com', ['ROLE_USER'], 'Viewer 🖐', false);
 
         $avatarFixturesImagesDir = dirname(__FILE__) . '/profile_images/';
         $publicDirectoryProfileImages = $this->containerBag->get('micro_post.profile_images_dir');
@@ -57,7 +57,8 @@ class AppFixtures extends Fixture
             $user = (new User())
                 ->setEmail($userDto->email)
                 ->setUserProfile($profile)
-                ->setRoles($userDto->roles);
+                ->setRoles($userDto->roles)
+                ->setIsVerified($userDto->isVerified);
             $user->setPassword($this->passwordHasher->hashPassword($user, $userPassword));
 
             $avatarFixtureImage = $avatarFixturesImagesDir . $index . '.jpg';
