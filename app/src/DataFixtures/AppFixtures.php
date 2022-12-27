@@ -114,5 +114,20 @@ class AppFixtures extends Fixture
         }
 
         $manager->flush();
+
+        // following to users
+        foreach ($users as $user) {
+            $indexOfUsers = array_rand($users, (int)ceil($countOfUsers * 0.5));
+
+            foreach ($indexOfUsers as $index) {
+                $followUser = $users[$index];
+
+                if ($followUser->getId() !== $user->getId()) {
+                    $user->follow($followUser);
+                }
+            }
+        }
+
+        $manager->flush();
     }
 }
