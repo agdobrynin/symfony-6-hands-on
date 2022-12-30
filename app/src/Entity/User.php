@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id;
+    private ?Ulid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\Email]

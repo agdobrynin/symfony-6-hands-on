@@ -12,6 +12,7 @@ use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -19,7 +20,8 @@ class AppFixtures extends Fixture
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private SetAvatarImageInterface     $setAvatarImage,
-        private ContainerBagInterface       $containerBag
+        private ContainerBagInterface       $containerBag,
+        private Filesystem                  $filesystem
     )
     {
     }
@@ -45,6 +47,8 @@ class AppFixtures extends Fixture
 
         $avatarFixturesImagesDir = dirname(__FILE__) . '/profile_images/';
         $publicDirectoryProfileImages = $this->containerBag->get('micro_post.profile_images_dir');
+
+        $this->filesystem->remove($publicDirectoryProfileImages);
 
         foreach ($fixtureUsers as $index => $userDto) {
             $profile = null;
