@@ -4,13 +4,15 @@ namespace App\Security\Voter;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class MicroPostVoter extends Voter
 {
-    public function __construct(private readonly Security $security)
+    public function __construct(
+        private readonly AccessDecisionManagerInterface $accessDecisionManager
+    )
     {
     }
 
@@ -32,13 +34,13 @@ class MicroPostVoter extends Voter
         $user = $token->getUser();
 
         if ($user instanceof User) {
-            if ($this->security->isGranted('ROLE_ADMIN')) {
+            if ($this->accessDecisionManager->decide($token, ['ROLE_ADMIN'])) {
                 return true;
             }
 
             if (MicroPost::VOTER_EDIT === $attribute) {
                 return $subject->getAuthor()->getId()->equals($user->getId())
-                    || $this->security->isGranted('ROLE_EDITOR');
+                    || $this->accessDecisionManager->decide($token, ['ROLE_EDITOR']);
             }
 
             if (MicroPost::VOTER_EXTRA_PRIVACY === $attribute) {
