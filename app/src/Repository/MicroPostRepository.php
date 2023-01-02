@@ -65,21 +65,6 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function getPostWithOtherData(Ulid|MicroPost $post): ?MicroPost
-    {
-        return $this->getAllQuery(
-            withComments: true,
-            withCommentsAuthor: true,
-            withLikes: true,
-            withAuthor: true,
-            withProfile: true
-        )
-            ->where('mp.id = :post')
-            ->setParameter(':post', $post instanceof MicroPost ? $post->getId()->toRfc4122() : $post->toRfc4122())
-            ->getQuery()
-            ->getSingleResult();
-    }
-
     public function getPostsByUser(int $page, $pageSize, User $user): PaginatorItems
     {
         $query = $this->getAllQuery(
