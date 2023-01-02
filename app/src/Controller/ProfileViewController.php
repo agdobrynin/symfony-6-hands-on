@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\MicroPostRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,15 +15,15 @@ class ProfileViewController extends AbstractController
 {
     #[Route('/profile/{id}/view', name: 'app_profile_view')]
     public function index(
-        string              $id,
-        UserRepository      $userRepository,
-        MicroPostRepository $microPostRepository,
-        Request             $request
+        string                                                            $id,
+        UserRepository                                                    $userRepository,
+        MicroPostRepository                                               $microPostRepository,
+        Request                                                           $request,
+        #[Autowire('%env(int:PAGE_SIZE_FOR_POSTS_ON_PROFILE_PAGE)%')] int $pageSize
     ): Response
     {
         if ($user = $userRepository->getUserForUserProfilePage($id)) {
             $page = (int)$request->get('page', 1);
-            $pageSize = $this->getParameter('blogger_profile.posts_list.page_size');
             $paginator = $microPostRepository->getPostsByUser($page, $pageSize, $user);
             $microPostRepository->fillLikeCount($paginator->iterator);
             $microPostRepository->fillCommentsCount($paginator->iterator);

@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Repository\MicroPostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,9 +16,9 @@ class MicroPostListController extends AbstractController
     private readonly int $page;
 
     public function __construct(
-        private RequestStack                 $requestStack,
-        private readonly int                 $pageSize,
-        private readonly MicroPostRepository $microPostRepository
+        private RequestStack                                                   $requestStack,
+        #[Autowire('%env(int:PAGE_SIZE_ON_INDEX_PAGE)%')] private readonly int $pageSize,
+        private readonly MicroPostRepository                                   $microPostRepository
     )
     {
         $this->page = (int)$this->requestStack->getCurrentRequest()->get('page', 1);
