@@ -52,9 +52,9 @@ class SetAvatarImageTest extends TestCase
                 ->with($publicDirectoryProfileImages . DIRECTORY_SEPARATOR . $existFile);
         }
 
-        $srv = new SetAvatarImage($avatarFileNameGenerator, $fileSystem);
+        $srv = new SetAvatarImage($avatarFileNameGenerator, $fileSystem, $publicDirectoryProfileImages);
 
-        $srv->set($publicDirectoryProfileImages, $file, $origFileExtension, $user);
+        $srv->set($file, $origFileExtension, $user);
 
         self::assertStringEndsWith($fileNameEnd, $user->getUserProfile()->getAvatarImage());
     }

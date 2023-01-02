@@ -58,10 +58,8 @@ class UserProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $uploadFile */
             $uploadFile = $form->get('avatar')->getData();
-            $directoryProfileImages = $this->getParameter('micro_post.profile_images_dir');
 
             $setAvatarImage->set(
-                publicDirectoryProfileImages: $directoryProfileImages,
                 file: $uploadFile->getFileInfo()->getRealPath(),
                 fileExtension: $uploadFile->getClientOriginalExtension(),
                 user: $user,

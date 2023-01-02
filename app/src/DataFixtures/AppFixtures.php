@@ -70,7 +70,6 @@ class AppFixtures extends Fixture
 
             if ($avatarFile->isFile()) {
                 $this->setAvatarImage->set(
-                    publicDirectoryProfileImages: $publicDirectoryProfileImages,
                     file: $avatarFile->getRealPath(),
                     fileExtension: $avatarFile->getExtension(),
                     user: $user,
